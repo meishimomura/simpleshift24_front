@@ -131,7 +131,7 @@ export const authSlice = createSlice({
       fetchAsyncLogin.fulfilled,
       (state, action: PayloadAction<JWT>) => {
         localStorage.setItem("localJWT", action.payload.access);
-        action.payload.access && (window.location.href = "/tasks");
+        action.payload.access && (window.location.href = "/shift");
       }
     );
     builder.addCase(
