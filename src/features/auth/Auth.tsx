@@ -6,13 +6,13 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
 
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../app/store";
@@ -41,8 +41,24 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 4),
+    color: "#ffffff",
   },
 }));
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#ff8f00",
+      light: "#ffc046",
+      dark: "#c56000",
+    },
+    secondary: {
+      main: "#00c853",
+      light: "#5efa81",
+      dark: "#009423",
+    },
+  },
+});
 
 const Auth: React.FC = () => {
   const classes = useStyles();
@@ -67,70 +83,69 @@ const Auth: React.FC = () => {
     }
   };
   return (
-    <div>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            {isLoginView ? "ログイン" : "新規会員登録"}
-          </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="店舗番号"
-              type="text"
-              name="username"
-              value={credential.username}
-              autoFocus
-              onChange={handleInputChange}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="パスワード"
-              type="password"
-              name="password"
-              value={credential.password}
-              onChange={handleInputChange}
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              size="large"
-              color="secondary"
-              className={classes.submit}
-              onClick={login}
-            >
+    <ThemeProvider theme={theme}>
+      <div>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
               {isLoginView ? "ログイン" : "新規会員登録"}
-            </Button>
-            <Grid container justify="center" alignItems="center">
-              <Grid item>
-                <Link
-                  href="#"
-                  variant="body2"
-                  onClick={() => dispatch(toggleMode())}
-                >
-                  {isLoginView ? "新規会員登録" : "ログイン"}
-                </Link>
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="店舗番号"
+                type="text"
+                name="username"
+                value={credential.username}
+                autoFocus
+                onChange={handleInputChange}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="パスワード"
+                type="password"
+                name="password"
+                value={credential.password}
+                onChange={handleInputChange}
+                autoComplete="current-password"
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                size="large"
+                color="secondary"
+                className={classes.submit}
+                onClick={login}
+              >
+                {isLoginView ? "ログイン" : "新規会員登録"}
+              </Button>
+              <Grid container justify="center" alignItems="center">
+                <Grid item>
+                  <Link
+                    href="#"
+                    variant="body2"
+                    onClick={() => dispatch(toggleMode())}
+                  >
+                    {isLoginView ? "新規会員登録" : "ログイン"}
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
-            {/* <span onClick={() => dispatch(toggleMode())}>
-              {isLoginView ? "新規会員登録" : "ログイン"}
-            </span> */}
-          </form>
-        </div>
-      </Container>
-    </div>
+            </form>
+          </div>
+        </Container>
+      </div>
+    </ThemeProvider>
   );
 };
 
