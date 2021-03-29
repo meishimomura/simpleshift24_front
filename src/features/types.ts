@@ -70,8 +70,10 @@ export interface PUT_STAFF {
   is_active: boolean;
 }
 export interface SHIFT_STATE {
+  shiftViewStatus: 0 | 1 | 2;
   shifts: READ_SHIFT[];
   editedShift: POST_SHIFT;
   selectedShift: READ_SHIFT;
   staff: READ_STAFF[];
+  editedStaff: POST_STAFF;
 }
