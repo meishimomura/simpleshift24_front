@@ -33,3 +33,47 @@ export interface AUTH_STATE {
   loginUser: LOGIN_USER;
   profiles: PROFILE[];
 }
+/*shiftSlice.ts*/
+export interface READ_SHIFT {
+  id: number;
+  owner: number;
+  shift_date: string;
+  shift_start: string;
+  shift_end: string;
+  staff: string;
+  staff_name: string;
+  staff_is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+export interface POST_SHIFT {
+  id: number;
+  shift_date: string;
+  shift_start: string;
+  shift_end: string;
+  staff: string;
+}
+export interface READ_STAFF {
+  id: number;
+  owner: number;
+  staff_name: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+export interface POST_STAFF {
+  id: number;
+  staff_name: string;
+}
+export interface PUT_STAFF {
+  id: number;
+  is_active: boolean;
+}
+export interface SHIFT_STATE {
+  shiftViewStatus: 0 | 1 | 2;
+  shifts: READ_SHIFT[];
+  editedShift: POST_SHIFT;
+  selectedShift: READ_SHIFT;
+  staff: READ_STAFF[];
+  editedStaff: POST_STAFF;
+}
