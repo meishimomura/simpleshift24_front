@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styles from "./Default.module.css";
 import { Grid, Avatar, AppBar, Box, Tabs, Tab } from "@material-ui/core";
 import {
@@ -11,8 +11,6 @@ import {
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { ThemeProvider } from "@material-ui/styles";
 
-import { Switch, Route, NavLink } from "react-router-dom";
-import App from "./App";
 import Staff from "./features/staff/Staff";
 import Shift from "./features/shift/Shift";
 
@@ -71,7 +69,8 @@ const theme = createMuiTheme({
 
 const Default: React.FC = () => {
   const history = useHistory();
-  const { page } = useParams();
+  const location = useLocation();
+  const page = location.pathname.split("/")[1];
 
   interface TAB_NAME_TO_INDEX {
     0: string;
@@ -181,16 +180,16 @@ const Default: React.FC = () => {
             </Grid>
           </Grid>
         </AppBar>
-        <Grid container>
-          <Grid>
-            <AppBar position="static">
-              <Tabs value={selectedTab} onChange={handleChange}>
-                <Tab label="シフト" />
-                <Tab label="スタッフ" />
-              </Tabs>
-            </AppBar>
-          </Grid>
-        </Grid>
+        <AppBar
+          color="secondary"
+          position="static"
+          style={{ backgroundColor: "#ffffff" }}
+        >
+          <Tabs value={selectedTab} onChange={handleChange}>
+            <Tab label="シフト" />
+            <Tab label="スタッフ" />
+          </Tabs>
+        </AppBar>
         <main>
           {selectedTab === 0 && <Shift />}
           {selectedTab === 1 && <Staff />}
