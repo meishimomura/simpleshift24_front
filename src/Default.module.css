@@ -1,0 +1,13 @@
+.default__iconLogout {
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.default__btn {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
