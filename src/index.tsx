@@ -1,20 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+import Default from "./Default";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
-import { Route, BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Auth from "./features/auth/Auth";
+
+import App from "./App";
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <div>
+      <Switch>
         <Route exact path="/" component={Auth} />
-        <Route exact path="/shift" component={App} />
-      </div>
+        <Route exact path="/shift" component={Default} />
+        <Route exact path="/staff" component={Default} />
+      </Switch>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")

@@ -137,7 +137,7 @@ export const fetchAsyncDeleteStaff = createAsyncThunk(
 );
 
 const initialState: SHIFT_STATE = {
-  shiftViewStatus: 0,
+  shiftViewStatus: true,
   shifts: [
     {
       id: 0,

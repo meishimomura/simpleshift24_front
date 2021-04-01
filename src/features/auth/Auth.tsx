@@ -120,7 +120,7 @@ const Auth: React.FC = () => {
                 autoComplete="current-password"
               />
               <Button
-                type="submit"
+                type="button"
                 fullWidth
                 variant="contained"
                 size="large"
