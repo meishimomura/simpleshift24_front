@@ -5,6 +5,10 @@
   outline: none;
   cursor: pointer;
 }
+.default__logoutWrap {
+  display: flex;
+  align-items: center;
+}
 .default__btn {
   background-color: transparent;
   border: none;
