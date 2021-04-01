@@ -7,16 +7,17 @@ import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Auth from "./features/auth/Auth";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
 import App from "./App";
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
+      <CssBaseline />
       <Switch>
         <Route exact path="/" component={Auth} />
-        <Route exact path="/shift" component={Default} />
-        <Route exact path="/staff" component={Default} />
+        <App />
       </Switch>
     </BrowserRouter>
   </Provider>,

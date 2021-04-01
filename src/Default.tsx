@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import styles from "./Default.module.css";
-import { Grid, Avatar, AppBar } from "@material-ui/core";
+import { Grid, Avatar, AppBar, Box, Tabs, Tab } from "@material-ui/core";
 import {
   makeStyles,
   createMuiTheme,
@@ -13,6 +14,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { Switch, Route, NavLink } from "react-router-dom";
 import App from "./App";
 import Staff from "./features/staff/Staff";
+import Shift from "./features/shift/Shift";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -38,15 +40,14 @@ import { AppDispatch } from "./app/store";
 
 const useStyles = makeStyles((theme: Theme) => ({
   icon: {
-    marginTop: theme.spacing(3),
     cursor: "none",
   },
   avatar: {
-    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(2),
   },
   header: {
     color: "#fff",
-    padding: "0px 20px",
+    padding: "0px 50px",
   },
 }));
 
@@ -63,9 +64,44 @@ const theme = createMuiTheme({
       dark: "#009423",
     },
   },
+  typography: {
+    htmlFontSize: 10,
+  },
 });
 
 const Default: React.FC = () => {
+  const history = useHistory();
+  const { page } = useParams();
+
+  interface TAB_NAME_TO_INDEX {
+    0: string;
+    1: string;
+    [key: number]: string;
+  }
+
+  const tabNameToIndex: TAB_NAME_TO_INDEX = {
+    0: "shift",
+    1: "staff",
+  };
+
+  interface INDEX_TO_TAB_NAME {
+    shift: number;
+    staff: number;
+    [key: string]: number;
+  }
+
+  const indexToTabName: INDEX_TO_TAB_NAME = {
+    shift: 0,
+    staff: 1,
+  };
+
+  const [selectedTab, setSelectedTab] = React.useState(indexToTabName[page]);
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    history.push(`/${tabNameToIndex[newValue]}`);
+    setSelectedTab(newValue);
+  };
+
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
   const editedShift = useSelector(selectEditedShift);
@@ -100,78 +136,66 @@ const Default: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div>
+      <>
         <AppBar color="primary" position="static" className={classes.header}>
           <Grid container alignItems="center">
             <Grid item xs={8}>
               <h1>シンプルシフト24</h1>
             </Grid>
             <Grid item xs={4}>
-              <button onClick={Logout} className={styles.default__iconLogout}>
-                <ExitToAppIcon fontSize="large" />
-                ログアウト
-              </button>
-              <input
-                type="file"
-                id="imageInput"
-                hidden={true}
-                onChange={(e) => {
-                  dispatch(
-                    fetchAsyncUpdateProf({
-                      id: loginProfile.id,
-                      img: e.target.files !== null ? e.target.files[0] : null,
-                    })
-                  );
-                }}
-              />
-              <button
-                className={styles.default__btn}
-                onClick={handlerEditPicture}
-              >
-                <Avatar
-                  className={classes.avatar}
-                  alt="avatar"
-                  src={
-                    loginProfile?.img !== null ? loginProfile?.img : undefined
-                  }
+              <Grid container alignItems="center" justify="flex-end">
+                <button
+                  className={styles.default__btn}
+                  onClick={handlerEditPicture}
+                >
+                  <Avatar
+                    className={classes.avatar}
+                    alt="avatar"
+                    src={
+                      loginProfile?.img !== null ? loginProfile?.img : undefined
+                    }
+                  />
+                </button>
+                <button onClick={Logout} className={styles.default__iconLogout}>
+                  <div className={styles.default__logoutWrap}>
+                    <ExitToAppIcon style={{ fontSize: 35 }} color="action" />
+                    <Box fontWeight="fontWeightBold" fontSize={16}>
+                      ログアウト
+                    </Box>
+                  </div>
+                </button>
+                <input
+                  type="file"
+                  id="imageInput"
+                  hidden={true}
+                  onChange={(e) => {
+                    dispatch(
+                      fetchAsyncUpdateProf({
+                        id: loginProfile.id,
+                        img: e.target.files !== null ? e.target.files[0] : null,
+                      })
+                    );
+                  }}
                 />
-              </button>
+              </Grid>
             </Grid>
           </Grid>
         </AppBar>
         <Grid container>
           <Grid>
-            <NavLink
-              to="/shift"
-              exact
-              activeClassName="my-active"
-              activeStyle={{
-                color: "#fa923f",
-                textDecoration: "underline",
-              }}
-            >
-              シフト
-            </NavLink>
-            <NavLink
-              to="/staff"
-              exact
-              activeClassName="my-active"
-              activeStyle={{
-                color: "#fa923f",
-                textDecoration: "underline",
-              }}
-            >
-              スタッフ
-            </NavLink>
+            <AppBar position="static">
+              <Tabs value={selectedTab} onChange={handleChange}>
+                <Tab label="シフト" />
+                <Tab label="スタッフ" />
+              </Tabs>
+            </AppBar>
           </Grid>
         </Grid>
         <main>
-          <Switch>
-            <Route exact path="/shift" component={App} />
-            <Route exact path="/staff" component={Staff} />
-          </Switch>
+          {selectedTab === 0 && <Shift />}
+          {selectedTab === 1 && <Staff />}
         </main>
-      </div>
+      </>
     </ThemeProvider>
   );
 };
