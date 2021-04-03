@@ -186,8 +186,8 @@ const Default: React.FC = () => {
           style={{ backgroundColor: "#ffffff" }}
         >
           <Tabs value={selectedTab} onChange={handleChange}>
-            <Tab label="シフト" />
-            <Tab label="スタッフ" />
+            <Tab label="シフト管理" />
+            <Tab label="スタッフ管理" />
           </Tabs>
         </AppBar>
         <main>

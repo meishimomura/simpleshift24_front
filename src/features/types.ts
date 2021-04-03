@@ -53,6 +53,15 @@ export interface POST_SHIFT {
   shift_end: string;
   staff: string;
 }
+export interface SHIFT_STATE {
+  shiftViewStatus: boolean;
+  shifts: READ_SHIFT[];
+  editedShift: POST_SHIFT;
+  selectedShift: READ_SHIFT;
+  staff: READ_STAFF[];
+  editedStaff: POST_STAFF;
+}
+/*staffShift.ts*/
 export interface READ_STAFF {
   id: number;
   owner: number;
@@ -65,15 +74,13 @@ export interface POST_STAFF {
   id: number;
   staff_name: string;
 }
+//
 export interface PUT_STAFF {
   id: number;
   is_active: boolean;
 }
-export interface SHIFT_STATE {
-  shiftViewStatus: boolean;
-  shifts: READ_SHIFT[];
-  editedShift: POST_SHIFT;
-  selectedShift: READ_SHIFT;
+//
+export interface STAFF_STATE {
   staff: READ_STAFF[];
   editedStaff: POST_STAFF;
 }
