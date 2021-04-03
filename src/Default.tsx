@@ -2,12 +2,7 @@ import React, { useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styles from "./Default.module.css";
 import { Grid, Avatar, AppBar, Box, Tabs, Tab } from "@material-ui/core";
-import {
-  makeStyles,
-  createMuiTheme,
-  MuiThemeProvider,
-  Theme,
-} from "@material-ui/core/styles";
+import { makeStyles, createMuiTheme, Theme } from "@material-ui/core/styles";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { ThemeProvider } from "@material-ui/styles";
 
@@ -23,16 +18,6 @@ import {
   fetchAsyncGetProfs,
   fetchAsyncUpdateProf,
 } from "./features/auth/authSlice";
-import {
-  fetchAsyncGetShifts,
-  fetchAsyncGetStaff,
-  selectEditedShift,
-  selectEditedStaff,
-} from "./features/shift/shiftSlice";
-
-import ShiftList from "./features/shift/ShiftList";
-import ShiftForm from "./features/shift/ShiftForm";
-import ShiftDisplay from "./features/shift/ShiftDisplay";
 
 import { AppDispatch } from "./app/store";
 
@@ -103,8 +88,6 @@ const Default: React.FC = () => {
 
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
-  const editedShift = useSelector(selectEditedShift);
-  const editedStaff = useSelector(selectEditedStaff);
 
   const loginUser = useSelector(selectLoginUser);
   const profiles = useSelector(selectProfiles);
@@ -125,9 +108,7 @@ const Default: React.FC = () => {
 
   useEffect(() => {
     const fetchBootLoader = async () => {
-      await dispatch(fetchAsyncGetShifts());
       await dispatch(fetchAsyncGetMyProf());
-      await dispatch(fetchAsyncGetStaff());
       await dispatch(fetchAsyncGetProfs());
     };
     fetchBootLoader();
@@ -186,8 +167,8 @@ const Default: React.FC = () => {
           style={{ backgroundColor: "#ffffff" }}
         >
           <Tabs value={selectedTab} onChange={handleChange}>
-            <Tab label="シフト" />
-            <Tab label="スタッフ" />
+            <Tab label="シフト管理" />
+            <Tab label="スタッフ管理" />
           </Tabs>
         </AppBar>
         <main>
