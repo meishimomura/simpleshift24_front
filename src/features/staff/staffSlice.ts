@@ -55,14 +55,18 @@ export const fetchAsyncUpdateStaff = createAsyncThunk(
 
 export const fetchAsyncDeleteStaff = createAsyncThunk(
   "staff/deleteStaff",
-  async (id: number) => {
-    await axios.delete(`${process.env.REACT_APP_API_URL}/api/staff/${id}/`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.localJWT}`,
-      },
-    });
-    return id;
+  async (staff: PUT_STAFF) => {
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/api/staff/${staff.id}/`,
+      staff,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${localStorage.localJWT}`,
+        },
+      }
+    );
+    return staff.id;
   }
 );
 
