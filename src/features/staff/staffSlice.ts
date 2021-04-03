@@ -66,7 +66,7 @@ export const fetchAsyncDeleteStaff = createAsyncThunk(
   }
 );
 
-const initialState: STAFF_STATE = {
+export const initialState: STAFF_STATE = {
   staff: [
     {
       id: 0,
@@ -82,6 +82,7 @@ const initialState: STAFF_STATE = {
     staff_name: "",
   },
 };
+
 export const staffSlice = createSlice({
   name: "staff",
   initialState,

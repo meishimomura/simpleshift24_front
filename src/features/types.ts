@@ -61,7 +61,7 @@ export interface SHIFT_STATE {
   staff: READ_STAFF[];
   editedStaff: POST_STAFF;
 }
-/*staffShift.ts*/
+/*staffSlice.ts*/
 export interface READ_STAFF {
   id: number;
   owner: number;
@@ -83,4 +83,10 @@ export interface PUT_STAFF {
 export interface STAFF_STATE {
   staff: READ_STAFF[];
   editedStaff: POST_STAFF;
+}
+/*StaffList.tsx*/
+export interface PAGE_STATE {
+  rows: READ_STAFF[];
+  offset: number;
+  parPage: number;
 }
