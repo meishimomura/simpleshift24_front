@@ -93,6 +93,20 @@ const StaffList: React.FC = () => {
                     <TableCell>
                       <span>{row["staff_name"]}</span>
                     </TableCell>
+                    <TableCell align="center">
+                      <button
+                        onClick={() => {
+                          dispatch(
+                            fetchAsyncDeleteStaff({ ...row, is_active: false })
+                          );
+                        }}
+                      >
+                        <DeleteOutlineOutlinedIcon />
+                      </button>
+                      {/* <button onClick={() => dispatch(editStaff(row))}>
+                        <EditOutlinedIcon />
+                      </button> */}
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
