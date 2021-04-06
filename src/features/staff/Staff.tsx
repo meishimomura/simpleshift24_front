@@ -3,10 +3,9 @@ import StaffList from "./StaffList";
 
 const Staff = () => {
   return (
-    <div>
-      <p>スタッフ</p>
+    <>
       <StaffList />
-    </div>
+    </>
   );
 };
 

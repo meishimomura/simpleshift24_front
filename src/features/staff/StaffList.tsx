@@ -3,22 +3,32 @@ import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
+import SaveIcon from "@material-ui/icons/Save";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import {
   Button,
   Table,
-  TableHead,
   TableCell,
   TableRow,
   TableBody,
+  Modal,
+  TextField,
 } from "@material-ui/core";
 import Pagination from "material-ui-flat-pagination";
 
 import { useSelector, useDispatch } from "react-redux";
-import { fetchAsyncDeleteStaff, editStaff, selectStaff } from "./staffSlice";
-import { selectLoginUser } from "../auth/authSlice";
+import {
+  fetchAsyncDeleteStaff,
+  editStaff,
+  selectStaff,
+  selectEditedStaff,
+} from "./staffSlice";
 import { AppDispatch } from "../../app/store";
-import { initialState, fetchAsyncGetStaff } from "./staffSlice";
+import {
+  initialState,
+  fetchAsyncGetStaff,
+  fetchAsyncCreateStaff,
+} from "./staffSlice";
 import { READ_STAFF, PAGE_STATE } from "../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -34,18 +44,62 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: theme.spacing(3),
     height: theme.spacing(3),
   },
+  saveModal: {
+    marginTop: theme.spacing(4),
+    marginLeft: theme.spacing(2),
+  },
+  paper: {
+    position: "absolute",
+    textAlign: "center",
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+  field: {
+    margin: theme.spacing(2),
+    minWidth: 240,
+  },
 }));
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const StaffList: React.FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
+
   const staff = useSelector(selectStaff);
-  const loginUser = useSelector(selectLoginUser);
+  const editedStaff = useSelector(selectEditedStaff);
+
+  const [open, setOpen] = useState(false);
+  const [modalStyle] = useState(getModalStyle);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const isDisabled = editedStaff.staff_name.length === 0;
+
+  const handleInputTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(editStaff({ ...editedStaff, staff_name: e.target.value }));
+  };
 
   const [state, setState] = useState<PAGE_STATE>({
     rows: staff,
     offset: 0,
-    parPage: 2,
+    parPage: 10,
   });
 
   useEffect(() => {
@@ -70,18 +124,38 @@ const StaffList: React.FC = () => {
         color="secondary"
         size="small"
         startIcon={<AddCircleOutlineIcon />}
-        onClick={() => {
-          dispatch(
-            editStaff({
-              id: 0,
-              staff_name: "",
-            })
-          );
-        }}
+        onClick={handleOpen}
       >
         スタッフ新規登録
       </Button>
-
+      <Modal open={open} onClose={handleClose}>
+        <div style={modalStyle} className={classes.paper}>
+          <TextField
+            className={classes.field}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            label="New category"
+            type="text"
+            value={editedStaff.staff_name}
+            onChange={handleInputTextChange}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            className={classes.saveModal}
+            startIcon={<SaveIcon />}
+            disabled={isDisabled}
+            onClick={() => {
+              dispatch(fetchAsyncCreateStaff(editedStaff.staff_name));
+              handleClose();
+            }}
+          >
+            保存
+          </Button>
+        </div>
+      </Modal>
       {staff[0]?.staff_name && (
         <>
           <Table size="small">
@@ -111,17 +185,19 @@ const StaffList: React.FC = () => {
                 ))}
             </TableBody>
           </Table>
-          <Pagination
-            limit={state.parPage}
-            offset={state.offset}
-            total={state.rows.length}
-            onClick={(e, offset) => {
-              setState((state) => ({
-                ...state,
-                offset: offset,
-              }));
-            }}
-          />
+          {state.rows.length > state.parPage && (
+            <Pagination
+              limit={state.parPage}
+              offset={state.offset}
+              total={state.rows.length}
+              onClick={(e, offset) => {
+                setState((state) => ({
+                  ...state,
+                  offset: offset,
+                }));
+              }}
+            />
+          )}
         </>
       )}
     </>
