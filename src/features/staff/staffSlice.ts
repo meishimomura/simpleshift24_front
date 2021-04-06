@@ -7,7 +7,7 @@ export const fetchAsyncGetStaff = createAsyncThunk(
   "staff/getStaff",
   async () => {
     const res = await axios.get<READ_STAFF[]>(
-      `${process.env.REACT_APP_API_URL}/api/staff`,
+      `${process.env.REACT_APP_API_URL}/api/staff/?is_active=True`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -21,10 +21,10 @@ export const fetchAsyncGetStaff = createAsyncThunk(
 
 export const fetchAsyncCreateStaff = createAsyncThunk(
   "staff/createStaff",
-  async (staff: POST_STAFF) => {
+  async (staff_name: string) => {
     const res = await axios.post<READ_STAFF>(
       `${process.env.REACT_APP_API_URL}/api/staff/`,
-      staff,
+      { staff_name: staff_name },
       {
         headers: {
           "Content-Type": "application/json",
