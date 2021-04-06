@@ -28,6 +28,7 @@ import {
   initialState,
   fetchAsyncGetStaff,
   fetchAsyncCreateStaff,
+  fetchAsyncUpdateStaff,
 } from "./staffSlice";
 import { READ_STAFF, PAGE_STATE } from "../types";
 
@@ -128,34 +129,6 @@ const StaffList: React.FC = () => {
       >
         スタッフ新規登録
       </Button>
-      <Modal open={open} onClose={handleClose}>
-        <div style={modalStyle} className={classes.paper}>
-          <TextField
-            className={classes.field}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            label="New category"
-            type="text"
-            value={editedStaff.staff_name}
-            onChange={handleInputTextChange}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            className={classes.saveModal}
-            startIcon={<SaveIcon />}
-            disabled={isDisabled}
-            onClick={() => {
-              dispatch(fetchAsyncCreateStaff(editedStaff.staff_name));
-              handleClose();
-            }}
-          >
-            保存
-          </Button>
-        </div>
-      </Modal>
       {staff[0]?.staff_name && (
         <>
           <Table size="small">
@@ -177,9 +150,14 @@ const StaffList: React.FC = () => {
                       >
                         <DeleteOutlineOutlinedIcon />
                       </button>
-                      {/* <button onClick={() => dispatch(editStaff(row))}>
+                      <button
+                        onClick={() => {
+                          dispatch(editStaff(row));
+                          handleOpen();
+                        }}
+                      >
                         <EditOutlinedIcon />
-                      </button> */}
+                      </button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -200,6 +178,36 @@ const StaffList: React.FC = () => {
           )}
         </>
       )}
+      <Modal open={open} onClose={handleClose}>
+        <div style={modalStyle} className={classes.paper}>
+          <TextField
+            className={classes.field}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            label={editedStaff.id ? "スタッフ名変更" : "新規スタッフ"}
+            type="text"
+            value={editedStaff.staff_name}
+            onChange={handleInputTextChange}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            className={classes.saveModal}
+            startIcon={<SaveIcon />}
+            disabled={isDisabled}
+            onClick={() => {
+              editedStaff.id !== 0
+                ? dispatch(fetchAsyncUpdateStaff(editedStaff))
+                : dispatch(fetchAsyncCreateStaff(editedStaff.staff_name));
+              handleClose();
+            }}
+          >
+            {editedStaff.id !== 0 ? "更新" : "追加"}
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 };
