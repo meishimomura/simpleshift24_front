@@ -7,7 +7,7 @@ export const fetchAsyncGetStaff = createAsyncThunk(
   "staff/getStaff",
   async () => {
     const res = await axios.get<READ_STAFF[]>(
-      `${process.env.REACT_APP_API_URL}/api/staff`,
+      `${process.env.REACT_APP_API_URL}/api/staff/?is_active=True`,
       {
         headers: {
           "Content-Type": "application/json",

@@ -74,12 +74,10 @@ export interface POST_STAFF {
   id: number;
   staff_name: string;
 }
-//
 export interface PUT_STAFF {
   id: number;
   is_active: boolean;
 }
-//
 export interface STAFF_STATE {
   staff: READ_STAFF[];
   editedStaff: POST_STAFF;
