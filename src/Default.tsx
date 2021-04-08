@@ -19,6 +19,8 @@ import {
   fetchAsyncUpdateProf,
 } from "./features/auth/authSlice";
 
+import { fetchAsyncGetStaff } from "./features/staff/staffSlice";
+
 import { AppDispatch } from "./app/store";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -110,6 +112,7 @@ const Default: React.FC = () => {
     const fetchBootLoader = async () => {
       await dispatch(fetchAsyncGetMyProf());
       await dispatch(fetchAsyncGetProfs());
+      await dispatch(fetchAsyncGetStaff());
     };
     fetchBootLoader();
   }, [dispatch]);

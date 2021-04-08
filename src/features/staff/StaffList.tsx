@@ -26,7 +26,6 @@ import {
 import { AppDispatch } from "../../app/store";
 import {
   initialState,
-  fetchAsyncGetStaff,
   fetchAsyncCreateStaff,
   fetchAsyncUpdateStaff,
 } from "./staffSlice";
@@ -102,13 +101,6 @@ const StaffList: React.FC = () => {
     offset: 0,
     parPage: 10,
   });
-
-  useEffect(() => {
-    const fetchBootLoader = async () => {
-      await dispatch(fetchAsyncGetStaff());
-    };
-    fetchBootLoader();
-  }, [dispatch]);
 
   useEffect(() => {
     setState((state) => ({
