@@ -12,6 +12,11 @@ import {
 } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import AddIcon from "@material-ui/icons/Add";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import { DatePicker } from "@material-ui/pickers";
+import jaLocale from "date-fns/locale/ja";
+import format from "date-fns/format";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -43,6 +48,15 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+class ExtendedUtils extends DateFnsUtils {
+  getCalendarHeaderText(date: any) {
+    return format(date, "yyyy MMM", { locale: this.locale });
+  }
+  getDatePickerHeaderText(date: any) {
+    return format(date, "MMMd日", { locale: this.locale });
+  }
+}
+
 const ShiftForm: React.FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
@@ -51,6 +65,8 @@ const ShiftForm: React.FC = () => {
   const editedShift = useSelector(selectEditedShift);
 
   const [inputText, setInputText] = useState("");
+
+  const [date, setDate] = React.useState<Date | null>(new Date());
 
   const isDisabled =
     editedShift.shift_date.length === 0 ||
@@ -79,7 +95,33 @@ const ShiftForm: React.FC = () => {
       {staffUser.staff_name}
     </MenuItem>
   ));
-  return <></>;
+
+  return (
+    <MuiPickersUtilsProvider utils={ExtendedUtils} locale={jaLocale}>
+      <h2>{editedShift.id ? "シフト更新" : "新規シフト"}</h2>
+      <form>
+        <DatePicker
+          label="日付"
+          value={date}
+          onChange={setDate}
+          format="yyyy/MM/dd"
+          animateYearScrolling
+          okLabel="決定"
+          cancelLabel="キャンセル"
+        />
+        <FormControl className={classes.field}>
+          <InputLabel>従業員名</InputLabel>
+          <Select
+            name="staff"
+            onChange={handleSelectStaffChange}
+            value={editedShift.staff}
+          >
+            {staffOptions}
+          </Select>
+        </FormControl>
+      </form>
+    </MuiPickersUtilsProvider>
+  );
 };
 
 export default ShiftForm;
