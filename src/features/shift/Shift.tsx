@@ -1,7 +1,12 @@
 import React from "react";
+import ShiftForm from "./ShiftForm";
 
 const Shift: React.FC = () => {
-  return <div>シフト</div>;
+  return (
+    <>
+      <ShiftForm />
+    </>
+  );
 };
 
 export default Shift;

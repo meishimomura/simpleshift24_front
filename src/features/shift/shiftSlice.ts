@@ -6,7 +6,6 @@ import {
   POST_SHIFT,
   READ_STAFF,
   POST_STAFF,
-  PUT_STAFF,
   SHIFT_STATE,
 } from "../types";
 
@@ -73,71 +72,7 @@ export const fetchAsyncDeleteShift = createAsyncThunk(
   }
 );
 
-export const fetchAsyncGetStaff = createAsyncThunk(
-  "shift/getStaff",
-  async () => {
-    const res = await axios.get<READ_STAFF[]>(
-      `${process.env.REACT_APP_API_URL}/api/staff`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${localStorage.localJWT}`,
-        },
-      }
-    );
-    return res.data;
-  }
-);
-
-export const fetchAsyncCreateStaff = createAsyncThunk(
-  "shift/createStaff",
-  async (staff: POST_STAFF) => {
-    const res = await axios.post<READ_STAFF>(
-      `${process.env.REACT_APP_API_URL}/api/staff/`,
-      staff,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${localStorage.localJWT}`,
-        },
-      }
-    );
-    return res.data;
-  }
-);
-
-export const fetchAsyncUpdateStaff = createAsyncThunk(
-  "shift/updateStaff",
-  async (staff: POST_STAFF) => {
-    const res = await axios.put<READ_STAFF>(
-      `${process.env.REACT_APP_API_URL}/api/staff/${staff.id}/`,
-      staff,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${localStorage.localJWT}`,
-        },
-      }
-    );
-    return res.data;
-  }
-);
-
-export const fetchAsyncDeleteStaff = createAsyncThunk(
-  "shift/deleteStaff",
-  async (id: number) => {
-    await axios.delete(`${process.env.REACT_APP_API_URL}/api/staff/${id}/`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.localJWT}`,
-      },
-    });
-    return id;
-  }
-);
-
-const initialState: SHIFT_STATE = {
-  shiftViewStatus: true,
+export const initialState: SHIFT_STATE = {
   shifts: [
     {
       id: 0,
@@ -145,7 +80,7 @@ const initialState: SHIFT_STATE = {
       shift_date: "",
       shift_start: "",
       shift_end: "",
-      staff: "",
+      staff: 0,
       staff_name: "",
       staff_is_active: true,
       created_at: "",
@@ -157,7 +92,7 @@ const initialState: SHIFT_STATE = {
     shift_date: "",
     shift_start: "",
     shift_end: "",
-    staff: "",
+    staff: 0,
   },
   selectedShift: {
     id: 0,
@@ -165,25 +100,11 @@ const initialState: SHIFT_STATE = {
     shift_date: "",
     shift_start: "",
     shift_end: "",
-    staff: "",
+    staff: 0,
     staff_name: "",
     staff_is_active: true,
     created_at: "",
     updated_at: "",
-  },
-  staff: [
-    {
-      id: 0,
-      owner: 0,
-      staff_name: "",
-      is_active: true,
-      created_at: "",
-      updated_at: "",
-    },
-  ],
-  editedStaff: {
-    id: 0,
-    staff_name: "",
   },
 };
 export const shiftSlice = createSlice({
@@ -195,9 +116,6 @@ export const shiftSlice = createSlice({
     },
     selectShift(state, action: PayloadAction<READ_SHIFT>) {
       state.selectedShift = action.payload;
-    },
-    editStaff(state, action: PayloadAction<POST_STAFF>) {
-      state.editedStaff = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -256,67 +174,12 @@ export const shiftSlice = createSlice({
     builder.addCase(fetchAsyncDeleteShift.rejected, () => {
       window.location.href = "/";
     });
-    builder.addCase(
-      fetchAsyncGetStaff.fulfilled,
-      (state, action: PayloadAction<READ_STAFF[]>) => {
-        return {
-          ...state,
-          staff: action.payload,
-        };
-      }
-    );
-    builder.addCase(fetchAsyncGetStaff.rejected, () => {
-      window.location.href = "/";
-    });
-    builder.addCase(
-      fetchAsyncCreateStaff.fulfilled,
-      (state, action: PayloadAction<READ_STAFF>) => {
-        return {
-          ...state,
-          staff: [...state.staff, action.payload],
-          editedStaff: initialState.editedStaff,
-        };
-      }
-    );
-    builder.addCase(fetchAsyncCreateStaff.rejected, () => {
-      window.location.href = "/";
-    });
-    builder.addCase(
-      fetchAsyncUpdateStaff.fulfilled,
-      (state, action: PayloadAction<READ_STAFF>) => {
-        return {
-          ...state,
-          staff: state.staff.map((s) =>
-            s.id === action.payload.id ? action.payload : s
-          ),
-          editedStaff: initialState.editedStaff,
-        };
-      }
-    );
-    builder.addCase(fetchAsyncUpdateStaff.rejected, () => {
-      window.location.href = "/";
-    });
-    builder.addCase(
-      fetchAsyncDeleteStaff.fulfilled,
-      (state, action: PayloadAction<number>) => {
-        return {
-          ...state,
-          staff: state.staff.filter((s) => s.id !== action.payload),
-          editedStaff: initialState.editedStaff,
-        };
-      }
-    );
-    builder.addCase(fetchAsyncDeleteStaff.rejected, () => {
-      window.location.href = "/";
-    });
   },
 });
 
-export const { editShift, selectShift, editStaff } = shiftSlice.actions;
+export const { editShift, selectShift } = shiftSlice.actions;
 export const selectShifts = (state: RootState) => state.shift.shifts;
 export const selectEditedShift = (state: RootState) => state.shift.editedShift;
 export const selectSelectedShift = (state: RootState) =>
   state.shift.selectedShift;
-export const selectStaff = (state: RootState) => state.shift.staff;
-export const selectEditedStaff = (state: RootState) => state.shift.editedStaff;
 export default shiftSlice.reducer;

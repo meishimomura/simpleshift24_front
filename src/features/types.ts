@@ -40,7 +40,7 @@ export interface READ_SHIFT {
   shift_date: string;
   shift_start: string;
   shift_end: string;
-  staff: string;
+  staff: number;
   staff_name: string;
   staff_is_active: boolean;
   created_at: string;
@@ -51,15 +51,12 @@ export interface POST_SHIFT {
   shift_date: string;
   shift_start: string;
   shift_end: string;
-  staff: string;
+  staff: number;
 }
 export interface SHIFT_STATE {
-  shiftViewStatus: boolean;
   shifts: READ_SHIFT[];
   editedShift: POST_SHIFT;
   selectedShift: READ_SHIFT;
-  staff: READ_STAFF[];
-  editedStaff: POST_STAFF;
 }
 /*staffSlice.ts*/
 export interface READ_STAFF {
