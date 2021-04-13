@@ -1,13 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import {
-  READ_SHIFT,
-  POST_SHIFT,
-  READ_STAFF,
-  POST_STAFF,
-  SHIFT_STATE,
-} from "../types";
+import { READ_SHIFT, POST_SHIFT, SHIFT_STATE } from "../types";
 
 export const fetchAsyncGetShifts = createAsyncThunk(
   "shift/getShift",

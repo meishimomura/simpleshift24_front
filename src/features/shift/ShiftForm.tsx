@@ -7,8 +7,6 @@ import {
   FormControl,
   Select,
   Button,
-  Fab,
-  Modal,
 } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import AddIcon from "@material-ui/icons/Add";
@@ -17,6 +15,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker } from "@material-ui/pickers";
 import jaLocale from "date-fns/locale/ja";
 import format from "date-fns/format";
+import moment, { Moment } from "moment";
 
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -64,18 +63,23 @@ const ShiftForm: React.FC = () => {
   const staffUsers = useSelector(selectStaff);
   const editedShift = useSelector(selectEditedShift);
 
-  const [inputText, setInputText] = useState("");
-
-  const [date, setDate] = React.useState<Date | null>(new Date());
+  const handleDateChange = (date: Date | null) => {
+    if (date !== null) {
+      const momentDate: Moment = moment(new Date(date));
+      dispatch(
+        editShift({
+          ...editedShift,
+          shift_date: momentDate.format("YYYY-MM-DD"),
+        })
+      );
+    }
+  };
 
   const isDisabled =
     editedShift.shift_date.length === 0 ||
     editedShift.shift_start.length === 0 ||
-    editedShift.shift_end.length === 0;
-
-  const handleInputTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(e.target.value);
-  };
+    editedShift.shift_end.length === 0 ||
+    editedShift.staff === 0;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = e.target.value;
@@ -101,13 +105,43 @@ const ShiftForm: React.FC = () => {
       <h2>{editedShift.id ? "シフト更新" : "新規シフト"}</h2>
       <form>
         <DatePicker
+          name="shift_date"
           label="日付"
-          value={date}
-          onChange={setDate}
+          value={editedShift.shift_date === "" ? null : editedShift.shift_date}
+          onChange={handleDateChange}
           format="yyyy/MM/dd"
           animateYearScrolling
+          InputLabelProps={{
+            shrink: true,
+          }}
           okLabel="決定"
           cancelLabel="キャンセル"
+        />
+        <TextField
+          name="shift_start"
+          label="時間"
+          type="time"
+          value={editedShift.shift_start}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 300,
+          }}
+          onChange={handleInputChange}
+        />
+        <TextField
+          name="shift_end"
+          label=""
+          type="time"
+          value={editedShift.shift_end}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 300,
+          }}
+          onChange={handleInputChange}
         />
         <FormControl className={classes.field}>
           <InputLabel>従業員名</InputLabel>
@@ -119,6 +153,32 @@ const ShiftForm: React.FC = () => {
             {staffOptions}
           </Select>
         </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          className={classes.button}
+          startIcon={<SaveIcon />}
+          disabled={isDisabled}
+          onClick={
+            editedShift.id !== 0
+              ? () => dispatch(fetchAsyncUpdateShift(editedShift))
+              : () => dispatch(fetchAsyncCreateShift(editedShift))
+          }
+        >
+          {editedShift.id !== 0 ? "更新" : "保存"}
+        </Button>
+        <Button
+          variant="contained"
+          color="default"
+          size="small"
+          onClick={() => {
+            dispatch(editShift(initialState.editedShift));
+            dispatch(selectShift(initialState.selectedShift));
+          }}
+        >
+          キャンセル
+        </Button>
       </form>
     </MuiPickersUtilsProvider>
   );
