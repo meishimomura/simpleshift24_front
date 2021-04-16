@@ -11,6 +11,8 @@ import getDay from "date-fns/getDay";
 import startOfWeek from "date-fns/startOfWeek";
 import endOfWeek from "date-fns/endOfWeek";
 import eachDayOfInterval from "date-fns/eachDayOfInterval";
+import addWeeks from "date-fns/addWeeks";
+import subWeeks from "date-fns/subWeeks";
 
 import { selectShifts, editShift, selectShift } from "./shiftSlice";
 import { AppDispatch } from "../../app/store";
@@ -52,7 +54,7 @@ const ShiftList: React.FC = () => {
     { en: "sun", ja: "日" },
   ];
 
-  const targetDate = new Date();
+  const [targetDate, setTargetDate] = useState(new Date());
   const calendar = getCalendar(targetDate);
 
   const [state, setState] = useState<SHIFT_PAGE_STATE>({
@@ -97,11 +99,40 @@ const ShiftList: React.FC = () => {
           {calendar.map((date, i) => (
             <tr key={getDate(date)}>
               <th key={getDay(date)}>{days[i].ja}</th>
-              <th key={getDate(date)}>{getDate(date)}</th>
+              <th key={getDate(date)}>
+                {format(targetDate, "M")}&#047;{getDate(date)}
+              </th>
             </tr>
           ))}
         </tbody>
       </table>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="secondary"
+        size="small"
+        onClick={() => setTargetDate((current) => subWeeks(current, 1))}
+      >
+        前の週
+      </Button>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="secondary"
+        size="small"
+        onClick={() => setTargetDate(new Date())}
+      >
+        今週
+      </Button>
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="secondary"
+        size="small"
+        onClick={() => setTargetDate((current) => addWeeks(current, 1))}
+      >
+        次の週
+      </Button>
     </>
   );
 };
