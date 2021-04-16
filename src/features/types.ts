@@ -58,6 +58,12 @@ export interface SHIFT_STATE {
   editedShift: POST_SHIFT;
   selectedShift: READ_SHIFT;
 }
+/*ShiftList.tsx*/
+export interface SHIFT_PAGE_STATE {
+  rows: READ_SHIFT[];
+  offset: number;
+  parPage: number;
+}
 /*staffSlice.ts*/
 export interface READ_STAFF {
   id: number;

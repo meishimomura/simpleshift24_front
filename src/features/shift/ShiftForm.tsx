@@ -79,7 +79,7 @@ const ShiftForm: React.FC = () => {
     editedShift.shift_date.length === 0 ||
     editedShift.shift_start.length === 0 ||
     editedShift.shift_end.length === 0 ||
-    editedShift.staff === 0;
+    editedShift.staff === 1;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = e.target.value;
