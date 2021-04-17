@@ -1,0 +1,7 @@
+.shiftlist__table {
+  border-collapse: collapse;
+}
+.shiftlist__tdth {
+  border: 1px solid;
+  padding: 10px;
+}
