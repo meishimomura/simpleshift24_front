@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import styles from "./ShiftList.module.css";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -54,8 +55,17 @@ const ShiftList: React.FC = () => {
     { en: "sun", ja: "日" },
   ];
 
+  const timeLen: number = 24;
+  const shiftTimes = new Array(timeLen)
+    .fill(null)
+    .map((_, i) => ("00" + i).slice(-2) + ":00");
+
   const [targetDate, setTargetDate] = useState(new Date());
-  const calendar = getCalendar(targetDate);
+  const [calendar, setCalendar] = useState(getCalendar(targetDate));
+
+  useEffect(() => {
+    setCalendar(getCalendar(targetDate));
+  }, [targetDate]);
 
   const [state, setState] = useState<SHIFT_PAGE_STATE>({
     rows: shifts,
@@ -94,18 +104,6 @@ const ShiftList: React.FC = () => {
         新規シフト追加
       </Button>
       <h2>{format(targetDate, "y年M月")}</h2>
-      <table>
-        <tbody>
-          {calendar.map((date, i) => (
-            <tr key={getDate(date)}>
-              <th key={getDay(date)}>{days[i].ja}</th>
-              <th key={getDate(date)}>
-                {format(targetDate, "M")}&#047;{getDate(date)}
-              </th>
-            </tr>
-          ))}
-        </tbody>
-      </table>
       <Button
         className={classes.button}
         variant="contained"
@@ -133,6 +131,98 @@ const ShiftList: React.FC = () => {
       >
         次の週
       </Button>
+      <table className={styles.shiftlist__table}>
+        <tbody>
+          {calendar.map((date, i) => (
+            <>
+              <tr key={getDate(date) + 1}>
+                <th
+                  key={getDay(date) + getDate(date)}
+                  rowSpan={5}
+                  className={styles.shiftlist__tdth}
+                >
+                  {days[i].ja}
+                </th>
+                <td
+                  key={getDate(date)}
+                  rowSpan={5}
+                  className={styles.shiftlist__tdth}
+                >
+                  {format(targetDate, "M")}&#047;{getDate(date)}
+                </td>
+                <>
+                  {shiftTimes.map((shiftTime) => (
+                    <>
+                      <td
+                        id={format(date, "y-M-d") + shiftTime + 1}
+                        className={styles.shiftlist__tdth}
+                      >
+                        &nbsp;
+                      </td>
+                    </>
+                  ))}
+                </>
+              </tr>
+              <tr key={getDate(date) + 2} className={styles.shiftlist__tdth}>
+                <>
+                  {shiftTimes.map((shiftTime) => (
+                    <>
+                      <td
+                        id={format(date, "y-M-d") + shiftTime + 2}
+                        className={styles.shiftlist__tdth}
+                      >
+                        &nbsp;
+                      </td>
+                    </>
+                  ))}
+                </>
+              </tr>
+              <tr key={getDate(date) + 3} className={styles.shiftlist__tdth}>
+                <>
+                  {shiftTimes.map((shiftTime) => (
+                    <>
+                      <td
+                        id={format(date, "y-M-d") + shiftTime + 3}
+                        className={styles.shiftlist__tdth}
+                      >
+                        &nbsp;
+                      </td>
+                    </>
+                  ))}
+                </>
+              </tr>
+              <tr key={getDate(date) + 4} className={styles.shiftlist__tdth}>
+                <>
+                  {shiftTimes.map((shiftTime) => (
+                    <>
+                      <td
+                        id={format(date, "y-M-d") + shiftTime + 4}
+                        className={styles.shiftlist__tdth}
+                      >
+                        &nbsp;
+                      </td>
+                    </>
+                  ))}
+                </>
+              </tr>
+              <tr key={getDate(date) + 5} className={styles.shiftlist__tdth}>
+                <>
+                  {shiftTimes.map((shiftTime) => (
+                    <>
+                      <td
+                        id={format(date, "y-M-d") + shiftTime + 5}
+                        className={styles.shiftlist__tdth}
+                      >
+                        &nbsp;
+                      </td>
+                    </>
+                  ))}
+                </>
+              </tr>
+            </>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 };
