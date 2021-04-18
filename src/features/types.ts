@@ -58,6 +58,10 @@ export interface SHIFT_STATE {
   editedShift: POST_SHIFT;
   selectedShift: READ_SHIFT;
 }
+export interface DATE_STATE {
+  sDate: number;
+  eDate: number;
+}
 /*ShiftList.tsx*/
 export interface SHIFT_PAGE_STATE {
   rows: READ_SHIFT[];

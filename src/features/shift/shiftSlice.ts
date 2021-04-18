@@ -1,13 +1,18 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
-import { READ_SHIFT, POST_SHIFT, SHIFT_STATE } from "../types";
+import { READ_SHIFT, POST_SHIFT, SHIFT_STATE, DATE_STATE } from "../types";
+
+import format from "date-fns/format";
 
 export const fetchAsyncGetShifts = createAsyncThunk(
   "shift/getShift",
-  async () => {
+  async (date: DATE_STATE) => {
     const res = await axios.get<READ_SHIFT[]>(
-      `${process.env.REACT_APP_API_URL}/api/shift`,
+      `${process.env.REACT_APP_API_URL}/api/shift/?shift_date_after=${format(
+        date.sDate,
+        "y-M-d"
+      )}&shift_date_before=${format(date.eDate, "y-M-d")}`,
       {
         headers: {
           "Content-Type": "application/json",
