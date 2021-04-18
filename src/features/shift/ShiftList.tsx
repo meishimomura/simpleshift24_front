@@ -15,7 +15,12 @@ import eachDayOfInterval from "date-fns/eachDayOfInterval";
 import addWeeks from "date-fns/addWeeks";
 import subWeeks from "date-fns/subWeeks";
 
-import { selectShifts, editShift, selectShift } from "./shiftSlice";
+import {
+  selectShifts,
+  editShift,
+  selectShift,
+  fetchAsyncGetShifts,
+} from "./shiftSlice";
 import { AppDispatch } from "../../app/store";
 import { initialState } from "./shiftSlice";
 import { SHIFT_PAGE_STATE } from "../types";
@@ -30,15 +35,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: theme.spacing(3),
   },
 }));
-
-const getCalendar = (date: Date) => {
-  const startDate: Date = startOfWeek(date);
-  const endDate: Date = endOfWeek(date);
-  return eachDayOfInterval({
-    start: startDate.setDate(startDate.getDate() + 1),
-    end: endDate.setDate(endDate.getDate() + 1),
-  });
-};
 
 const ShiftList: React.FC = () => {
   const classes = useStyles();
@@ -61,10 +57,32 @@ const ShiftList: React.FC = () => {
     .map((_, i) => ("00" + i).slice(-2) + ":00");
 
   const [targetDate, setTargetDate] = useState(new Date());
-  const [calendar, setCalendar] = useState(getCalendar(targetDate));
+  let sunStartDate: Date = startOfWeek(targetDate);
+  let sunEndDate: Date = endOfWeek(targetDate);
+  const [startDate, setStartDate] = useState(
+    sunStartDate.setDate(sunStartDate.getDate() + 1)
+  );
+  const [endDate, setEndDate] = useState(
+    sunEndDate.setDate(sunEndDate.getDate() + 1)
+  );
+  const [calendar, setCalendar] = useState(
+    eachDayOfInterval({
+      start: startDate,
+      end: endDate,
+    })
+  );
 
   useEffect(() => {
-    setCalendar(getCalendar(targetDate));
+    sunStartDate = startOfWeek(targetDate);
+    sunEndDate = endOfWeek(targetDate);
+    setStartDate(sunStartDate.setDate(sunStartDate.getDate() + 1));
+    setEndDate(sunEndDate.setDate(sunEndDate.getDate() + 1));
+    setCalendar(
+      eachDayOfInterval({
+        start: startDate,
+        end: endDate,
+      })
+    );
   }, [targetDate]);
 
   const [state, setState] = useState<SHIFT_PAGE_STATE>({
@@ -79,6 +97,17 @@ const ShiftList: React.FC = () => {
       rows: shifts,
     }));
   }, [shifts]);
+
+  useEffect(() => {
+    const date = {
+      sDate: startDate,
+      eDate: endDate,
+    };
+    const fetchBootLoader = async () => {
+      await dispatch(fetchAsyncGetShifts(date));
+    };
+    fetchBootLoader();
+  }, [dispatch, targetDate]);
 
   return (
     <>
@@ -137,18 +166,18 @@ const ShiftList: React.FC = () => {
             <>
               <tr key={getDate(date) + 1}>
                 <th
-                  key={getDay(date) + getDate(date)}
-                  rowSpan={5}
-                  className={styles.shiftlist__tdth}
-                >
-                  {days[i].ja}
-                </th>
-                <td
                   key={getDate(date)}
                   rowSpan={5}
                   className={styles.shiftlist__tdth}
                 >
                   {format(targetDate, "M")}&#047;{getDate(date)}
+                </th>
+                <td
+                  key={getDay(date) + getDate(date)}
+                  rowSpan={5}
+                  className={styles.shiftlist__tdth}
+                >
+                  {days[i].ja}
                 </td>
                 <>
                   {shiftTimes.map((shiftTime) => (
