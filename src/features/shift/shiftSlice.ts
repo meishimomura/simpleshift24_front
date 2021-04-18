@@ -82,6 +82,7 @@ export const initialState: SHIFT_STATE = {
       staff: 0,
       staff_name: "",
       staff_is_active: true,
+      lane: 0,
       created_at: "",
       updated_at: "",
     },
@@ -92,6 +93,7 @@ export const initialState: SHIFT_STATE = {
     shift_start: "",
     shift_end: "",
     staff: 0,
+    lane: 0,
   },
   selectedShift: {
     id: 0,
@@ -102,6 +104,7 @@ export const initialState: SHIFT_STATE = {
     staff: 0,
     staff_name: "",
     staff_is_active: true,
+    lane: 0,
     created_at: "",
     updated_at: "",
   },

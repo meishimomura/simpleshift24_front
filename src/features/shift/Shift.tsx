@@ -14,7 +14,7 @@ const Shift: React.FC = () => {
   return (
     <>
       <ShiftList />
-      {editedShift.staff ? <ShiftForm /> : <ShiftDisplay />}
+      {editedShift.lane ? <ShiftForm /> : <ShiftDisplay />}
     </>
   );
 };

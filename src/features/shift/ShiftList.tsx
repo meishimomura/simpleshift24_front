@@ -124,7 +124,8 @@ const ShiftList: React.FC = () => {
               shift_date: "",
               shift_start: "",
               shift_end: "",
-              staff: 1,
+              staff: 0,
+              lane: 1,
             })
           );
           dispatch(selectShift(initialState.selectedShift));

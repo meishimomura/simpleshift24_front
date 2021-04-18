@@ -79,7 +79,7 @@ const ShiftForm: React.FC = () => {
     editedShift.shift_date.length === 0 ||
     editedShift.shift_start.length === 0 ||
     editedShift.shift_end.length === 0 ||
-    editedShift.staff === 1;
+    editedShift.staff === 0;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = e.target.value;
@@ -151,6 +151,20 @@ const ShiftForm: React.FC = () => {
             value={editedShift.staff}
           >
             {staffOptions}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.field}>
+          <InputLabel>レーン</InputLabel>
+          <Select
+            name="lane"
+            onChange={handleSelectStaffChange}
+            value={editedShift.lane}
+          >
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
           </Select>
         </FormControl>
         <Button
