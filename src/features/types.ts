@@ -43,6 +43,7 @@ export interface READ_SHIFT {
   staff: number;
   staff_name: string;
   staff_is_active: boolean;
+  lane: number;
   created_at: string;
   updated_at: string;
 }
@@ -51,6 +52,7 @@ export interface POST_SHIFT {
   shift_date: string;
   shift_start: string;
   shift_end: string;
+  lane: number;
   staff: number;
 }
 export interface SHIFT_STATE {
