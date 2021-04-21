@@ -94,6 +94,11 @@ const ShiftForm: React.FC = () => {
     dispatch(editShift({ ...editedShift, staff: value }));
   };
 
+  const handleSelectLaneChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+    const value = e.target.value as number;
+    dispatch(editShift({ ...editedShift, lane: value }));
+  };
+
   let staffOptions = staffUsers.map((staffUser) => (
     <MenuItem key={staffUser.id} value={staffUser.id}>
       {staffUser.staff_name}
@@ -157,7 +162,7 @@ const ShiftForm: React.FC = () => {
           <InputLabel>レーン</InputLabel>
           <Select
             name="lane"
-            onChange={handleSelectStaffChange}
+            onChange={handleSelectLaneChange}
             value={editedShift.lane}
           >
             <MenuItem value={1}>1</MenuItem>

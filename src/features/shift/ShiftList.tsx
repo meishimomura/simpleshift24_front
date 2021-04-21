@@ -51,10 +51,11 @@ const ShiftList: React.FC = () => {
     { en: "sun", ja: "日" },
   ];
 
-  const timeLen: number = 24;
-  const shiftTimes = new Array(timeLen)
-    .fill(null)
-    .map((_, i) => ("00" + i).slice(-2) + ":00");
+  const shiftTimes: string[] = [];
+  for (let i = 0; i < 24; ++i) {
+    shiftTimes.push(("00" + i).slice(-2) + ":00");
+    shiftTimes.push(("00" + i).slice(-2) + ":30");
+  }
 
   const [targetDate, setTargetDate] = useState(new Date());
   let sunStartDate: Date = startOfWeek(targetDate);
@@ -85,6 +86,17 @@ const ShiftList: React.FC = () => {
     );
   }, [targetDate]);
 
+  useEffect(() => {
+    const date = {
+      sDate: startDate,
+      eDate: endDate,
+    };
+    const fetchBootLoader = async () => {
+      await dispatch(fetchAsyncGetShifts(date));
+    };
+    fetchBootLoader();
+  }, [dispatch, targetDate]);
+
   const [state, setState] = useState<SHIFT_PAGE_STATE>({
     rows: shifts,
     offset: 0,
@@ -98,16 +110,59 @@ const ShiftList: React.FC = () => {
     }));
   }, [shifts]);
 
-  useEffect(() => {
-    const date = {
-      sDate: startDate,
-      eDate: endDate,
-    };
-    const fetchBootLoader = async () => {
-      await dispatch(fetchAsyncGetShifts(date));
-    };
-    fetchBootLoader();
-  }, [dispatch, targetDate]);
+  const staffData = (date: Date, shiftTime: string, i: number) => {
+    let cellData: JSX.Element | null = (
+      <td
+        id={format(date, "y-M-d") + shiftTime + i}
+        key={format(date, "y-M-d") + shiftTime + i}
+        className={styles.shiftlist__tdth}
+        colSpan={1}
+      >
+        &nbsp;
+      </td>
+    );
+    for (let row of state.rows) {
+      if (
+        row.lane === i &&
+        row.shift_date + row.shift_start <=
+          format(date, "yyyy-MM-dd") + shiftTime &&
+        row.shift_date + row.shift_end > format(date, "yyyy-MM-dd") + shiftTime
+      ) {
+        if (
+          row.lane === i &&
+          row.shift_date + row.shift_start ===
+            format(date, "yyyy-MM-dd") + shiftTime
+        ) {
+          const shift_endTime = new Date(row.shift_date + " " + row.shift_end);
+          const shift_startTime = new Date(
+            row.shift_date + " " + row.shift_start
+          );
+          const diff = shift_endTime.getTime() - shift_startTime.getTime();
+          const hour = (diff / (1000 * 60 * 60)) * 2;
+          let colspan = 1;
+          Number.isInteger(hour)
+            ? (colspan = hour)
+            : (colspan = Math.ceil(hour) + 1);
+          console.log(hour);
+          console.log(Math.ceil(hour) + 1);
+          cellData = (
+            <td
+              id={format(date, "y-M-d") + shiftTime + i}
+              key={format(date, "y-M-d") + shiftTime + i}
+              className={styles.shiftlist__tdth}
+              colSpan={colspan}
+            >
+              {row.staff_name + row.shift_start}~{row.shift_end}
+            </td>
+          );
+        } else {
+          cellData = null;
+        }
+        break;
+      }
+    }
+    return cellData;
+  };
 
   return (
     <>
@@ -180,74 +235,29 @@ const ShiftList: React.FC = () => {
                 >
                   {days[i].ja}
                 </td>
-                <>
-                  {shiftTimes.map((shiftTime) => (
-                    <>
-                      <td
-                        id={format(date, "y-M-d") + shiftTime + 1}
-                        className={styles.shiftlist__tdth}
-                      >
-                        &nbsp;
-                      </td>
-                    </>
-                  ))}
-                </>
+                {shiftTimes.map((shiftTime) => (
+                  <>{staffData(date, shiftTime, 1)}</>
+                ))}
               </tr>
               <tr key={getDate(date) + 2} className={styles.shiftlist__tdth}>
-                <>
-                  {shiftTimes.map((shiftTime) => (
-                    <>
-                      <td
-                        id={format(date, "y-M-d") + shiftTime + 2}
-                        className={styles.shiftlist__tdth}
-                      >
-                        &nbsp;
-                      </td>
-                    </>
-                  ))}
-                </>
+                {shiftTimes.map((shiftTime) => (
+                  <>{staffData(date, shiftTime, 2)}</>
+                ))}
               </tr>
               <tr key={getDate(date) + 3} className={styles.shiftlist__tdth}>
-                <>
-                  {shiftTimes.map((shiftTime) => (
-                    <>
-                      <td
-                        id={format(date, "y-M-d") + shiftTime + 3}
-                        className={styles.shiftlist__tdth}
-                      >
-                        &nbsp;
-                      </td>
-                    </>
-                  ))}
-                </>
+                {shiftTimes.map((shiftTime) => (
+                  <>{staffData(date, shiftTime, 3)}</>
+                ))}
               </tr>
               <tr key={getDate(date) + 4} className={styles.shiftlist__tdth}>
-                <>
-                  {shiftTimes.map((shiftTime) => (
-                    <>
-                      <td
-                        id={format(date, "y-M-d") + shiftTime + 4}
-                        className={styles.shiftlist__tdth}
-                      >
-                        &nbsp;
-                      </td>
-                    </>
-                  ))}
-                </>
+                {shiftTimes.map((shiftTime) => (
+                  <>{staffData(date, shiftTime, 4)}</>
+                ))}
               </tr>
               <tr key={getDate(date) + 5} className={styles.shiftlist__tdth}>
-                <>
-                  {shiftTimes.map((shiftTime) => (
-                    <>
-                      <td
-                        id={format(date, "y-M-d") + shiftTime + 5}
-                        className={styles.shiftlist__tdth}
-                      >
-                        &nbsp;
-                      </td>
-                    </>
-                  ))}
-                </>
+                {shiftTimes.map((shiftTime) => (
+                  <>{staffData(date, shiftTime, 5)}</>
+                ))}
               </tr>
             </>
           ))}
