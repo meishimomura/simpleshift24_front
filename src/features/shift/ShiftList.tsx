@@ -95,7 +95,7 @@ const ShiftList: React.FC = () => {
       await dispatch(fetchAsyncGetShifts(date));
     };
     fetchBootLoader();
-  }, [dispatch, targetDate]);
+  }, [dispatch, targetDate, shifts]);
 
   const [state, setState] = useState<SHIFT_PAGE_STATE>({
     rows: shifts,
@@ -151,6 +151,9 @@ const ShiftList: React.FC = () => {
               key={format(date, "y-M-d") + shiftTime + i}
               className={styles.shiftlist__tdth}
               colSpan={colspan}
+              onClick={() => {
+                dispatch(editShift(row));
+              }}
             >
               {row.staff_name + row.shift_start}~{row.shift_end}
             </td>
