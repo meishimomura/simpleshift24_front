@@ -4,15 +4,19 @@ import axios from "axios";
 import { READ_SHIFT, POST_SHIFT, SHIFT_STATE, DATE_STATE } from "../types";
 
 import format from "date-fns/format";
+import startOfWeek from "date-fns/startOfWeek";
+import endOfWeek from "date-fns/endOfWeek";
+import addWeeks from "date-fns/addWeeks";
+import subWeeks from "date-fns/subWeeks";
 
 export const fetchAsyncGetShifts = createAsyncThunk(
   "shift/getShift",
   async (date: DATE_STATE) => {
     const res = await axios.get<READ_SHIFT[]>(
       `${process.env.REACT_APP_API_URL}/api/shift/?shift_date_after=${format(
-        date.sDate,
+        date.startDate,
         "y-M-d"
-      )}&shift_date_before=${format(date.eDate, "y-M-d")}`,
+      )}&shift_date_before=${format(date.endDate, "y-M-d")}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -108,6 +112,12 @@ export const initialState: SHIFT_STATE = {
     created_at: "",
     updated_at: "",
   },
+  dateState: {
+    startDate: startOfWeek(new Date()).setDate(
+      startOfWeek(new Date()).getDate() + 1
+    ),
+    endDate: endOfWeek(new Date()).setDate(endOfWeek(new Date()).getDate() + 1),
+  },
 };
 export const shiftSlice = createSlice({
   name: "shift",
@@ -118,6 +128,21 @@ export const shiftSlice = createSlice({
     },
     selectShift(state, action: PayloadAction<READ_SHIFT>) {
       state.selectedShift = action.payload;
+    },
+    resetDateState(state, action: PayloadAction<DATE_STATE>) {
+      state.dateState = action.payload;
+    },
+    lastWeeks: (state) => {
+      state.dateState.startDate = Number(
+        subWeeks(state.dateState.startDate, 1)
+      );
+      state.dateState.endDate = Number(subWeeks(state.dateState.endDate, 1));
+    },
+    afterWeeks: (state) => {
+      state.dateState.startDate = Number(
+        addWeeks(state.dateState.startDate, 1)
+      );
+      state.dateState.endDate = Number(addWeeks(state.dateState.endDate, 1));
     },
   },
   extraReducers: (builder) => {
@@ -179,9 +204,16 @@ export const shiftSlice = createSlice({
   },
 });
 
-export const { editShift, selectShift } = shiftSlice.actions;
+export const {
+  editShift,
+  selectShift,
+  resetDateState,
+  lastWeeks,
+  afterWeeks,
+} = shiftSlice.actions;
 export const selectShifts = (state: RootState) => state.shift.shifts;
 export const selectEditedShift = (state: RootState) => state.shift.editedShift;
 export const selectSelectedShift = (state: RootState) =>
   state.shift.selectedShift;
+export const selectDateState = (state: RootState) => state.shift.dateState;
 export default shiftSlice.reducer;

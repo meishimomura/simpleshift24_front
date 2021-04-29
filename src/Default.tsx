@@ -20,6 +20,10 @@ import {
 } from "./features/auth/authSlice";
 
 import { fetchAsyncGetStaff } from "./features/staff/staffSlice";
+import {
+  selectDateState,
+  fetchAsyncGetShifts,
+} from "./features/shift/shiftSlice";
 
 import { AppDispatch } from "./app/store";
 
@@ -108,11 +112,14 @@ const Default: React.FC = () => {
     fileInput?.click();
   };
 
+  const DateState = useSelector(selectDateState);
+
   useEffect(() => {
     const fetchBootLoader = async () => {
       await dispatch(fetchAsyncGetMyProf());
       await dispatch(fetchAsyncGetProfs());
       await dispatch(fetchAsyncGetStaff());
+      await dispatch(fetchAsyncGetShifts(DateState));
     };
     fetchBootLoader();
   }, [dispatch]);

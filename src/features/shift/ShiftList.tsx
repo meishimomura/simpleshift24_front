@@ -4,26 +4,27 @@ import styles from "./ShiftList.module.css";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { Button } from "@material-ui/core";
+import { Button, Modal } from "@material-ui/core";
 
 import format from "date-fns/format";
 import getDate from "date-fns/getDate";
 import getDay from "date-fns/getDay";
-import startOfWeek from "date-fns/startOfWeek";
-import endOfWeek from "date-fns/endOfWeek";
 import eachDayOfInterval from "date-fns/eachDayOfInterval";
-import addWeeks from "date-fns/addWeeks";
-import subWeeks from "date-fns/subWeeks";
 
 import {
   selectShifts,
   editShift,
   selectShift,
-  fetchAsyncGetShifts,
+  resetDateState,
+  selectEditedShift,
+  selectDateState,
+  lastWeeks,
+  afterWeeks,
 } from "./shiftSlice";
 import { AppDispatch } from "../../app/store";
 import { initialState } from "./shiftSlice";
-import { SHIFT_PAGE_STATE } from "../types";
+import ShiftForm from "./ShiftForm";
+import ShiftDisplay from "./ShiftDisplay";
 
 const useStyles = makeStyles((theme: Theme) => ({
   button: {
@@ -34,12 +35,37 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: theme.spacing(3),
     height: theme.spacing(3),
   },
+  saveModal: {
+    marginTop: theme.spacing(4),
+    marginLeft: theme.spacing(2),
+  },
+  paper: {
+    position: "absolute",
+    textAlign: "center",
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 const ShiftList: React.FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
   const shifts = useSelector(selectShifts);
+  const editedShift = useSelector(selectEditedShift);
+  const dateState = useSelector(selectDateState);
 
   const days = [
     { en: "mon", ja: "月" },
@@ -57,57 +83,35 @@ const ShiftList: React.FC = () => {
     shiftTimes.push(("00" + i).slice(-2) + ":30");
   }
 
-  const [targetDate, setTargetDate] = useState(new Date());
-  let sunStartDate: Date = startOfWeek(targetDate);
-  let sunEndDate: Date = endOfWeek(targetDate);
-  const [startDate, setStartDate] = useState(
-    sunStartDate.setDate(sunStartDate.getDate() + 1)
-  );
-  const [endDate, setEndDate] = useState(
-    sunEndDate.setDate(sunEndDate.getDate() + 1)
-  );
   const [calendar, setCalendar] = useState(
     eachDayOfInterval({
-      start: startDate,
-      end: endDate,
+      start: dateState.startDate,
+      end: dateState.endDate,
     })
   );
+  const [rows, setRows] = useState(shifts);
+
+  const [open, setOpen] = useState(false);
+  const [modalStyle] = useState(getModalStyle);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
-    sunStartDate = startOfWeek(targetDate);
-    sunEndDate = endOfWeek(targetDate);
-    setStartDate(sunStartDate.setDate(sunStartDate.getDate() + 1));
-    setEndDate(sunEndDate.setDate(sunEndDate.getDate() + 1));
     setCalendar(
       eachDayOfInterval({
-        start: startDate,
-        end: endDate,
+        start: dateState.startDate,
+        end: dateState.endDate,
       })
     );
-  }, [targetDate]);
+  }, [dateState]);
 
   useEffect(() => {
-    const date = {
-      sDate: startDate,
-      eDate: endDate,
-    };
-    const fetchBootLoader = async () => {
-      await dispatch(fetchAsyncGetShifts(date));
-    };
-    fetchBootLoader();
-  }, [dispatch, targetDate, shifts]);
-
-  const [state, setState] = useState<SHIFT_PAGE_STATE>({
-    rows: shifts,
-    offset: 0,
-    parPage: 10,
-  });
-
-  useEffect(() => {
-    setState((state) => ({
-      ...state,
-      rows: shifts,
-    }));
+    setRows(shifts);
   }, [shifts]);
 
   const staffData = (date: Date, shiftTime: string, i: number) => {
@@ -121,7 +125,7 @@ const ShiftList: React.FC = () => {
         &nbsp;
       </td>
     );
-    for (let row of state.rows) {
+    for (let row of rows) {
       if (
         row.lane === i &&
         row.shift_date + row.shift_start <=
@@ -143,8 +147,6 @@ const ShiftList: React.FC = () => {
           Number.isInteger(hour)
             ? (colspan = hour)
             : (colspan = Math.ceil(hour) + 1);
-          console.log(hour);
-          console.log(Math.ceil(hour) + 1);
           cellData = (
             <td
               id={format(date, "y-M-d") + shiftTime + i}
@@ -152,6 +154,7 @@ const ShiftList: React.FC = () => {
               className={styles.shiftlist__tdth}
               colSpan={colspan}
               onClick={() => {
+                handleOpen();
                 dispatch(editShift(row));
               }}
             >
@@ -176,6 +179,7 @@ const ShiftList: React.FC = () => {
         size="small"
         startIcon={<AddCircleOutlineIcon />}
         onClick={() => {
+          handleOpen();
           dispatch(
             editShift({
               id: 0,
@@ -191,13 +195,13 @@ const ShiftList: React.FC = () => {
       >
         新規シフト追加
       </Button>
-      <h2>{format(targetDate, "y年M月")}</h2>
+      <h2>{format(dateState.startDate, "y年M月")}</h2>
       <Button
         className={classes.button}
         variant="contained"
         color="secondary"
         size="small"
-        onClick={() => setTargetDate((current) => subWeeks(current, 1))}
+        onClick={() => dispatch(lastWeeks())}
       >
         前の週
       </Button>
@@ -206,7 +210,7 @@ const ShiftList: React.FC = () => {
         variant="contained"
         color="secondary"
         size="small"
-        onClick={() => setTargetDate(new Date())}
+        onClick={() => dispatch(resetDateState(initialState.dateState))}
       >
         今週
       </Button>
@@ -215,7 +219,7 @@ const ShiftList: React.FC = () => {
         variant="contained"
         color="secondary"
         size="small"
-        onClick={() => setTargetDate((current) => addWeeks(current, 1))}
+        onClick={() => dispatch(afterWeeks())}
       >
         次の週
       </Button>
@@ -229,7 +233,7 @@ const ShiftList: React.FC = () => {
                   rowSpan={5}
                   className={styles.shiftlist__tdth}
                 >
-                  {format(targetDate, "M")}&#047;{getDate(date)}
+                  {format(dateState.startDate, "M")}&#047;{getDate(date)}
                 </th>
                 <td
                   key={getDay(date) + getDate(date)}
@@ -266,6 +270,11 @@ const ShiftList: React.FC = () => {
           ))}
         </tbody>
       </table>
+      <Modal open={open} onClose={handleClose}>
+        <div style={modalStyle} className={classes.paper}>
+          {editedShift.lane ? <ShiftForm /> : <ShiftDisplay />}
+        </div>
+      </Modal>
     </>
   );
 };

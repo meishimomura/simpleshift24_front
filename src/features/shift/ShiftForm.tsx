@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import AddIcon from "@material-ui/icons/Add";
+import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker } from "@material-ui/pickers";
@@ -21,6 +22,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchAsyncCreateShift,
   fetchAsyncUpdateShift,
+  fetchAsyncDeleteShift,
   selectEditedShift,
   editShift,
   selectShift,
@@ -105,6 +107,15 @@ const ShiftForm: React.FC = () => {
     </MenuItem>
   ));
 
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <MuiPickersUtilsProvider utils={ExtendedUtils} locale={jaLocale}>
       <h2>{editedShift.id ? "シフト更新" : "新規シフト"}</h2>
@@ -187,11 +198,27 @@ const ShiftForm: React.FC = () => {
         >
           {editedShift.id !== 0 ? "更新" : "保存"}
         </Button>
+        {editedShift.id !== 0 && (
+          <Button
+            variant="contained"
+            color="default"
+            size="small"
+            className={classes.button}
+            startIcon={<DeleteOutlineOutlinedIcon />}
+            onClick={() => {
+              dispatch(fetchAsyncDeleteShift(editedShift.id));
+              dispatch(editShift(initialState.editedShift));
+            }}
+          >
+            削除
+          </Button>
+        )}
         <Button
           variant="contained"
           color="default"
           size="small"
           onClick={() => {
+            handleClose();
             dispatch(editShift(initialState.editedShift));
             dispatch(selectShift(initialState.selectedShift));
           }}
