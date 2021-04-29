@@ -118,7 +118,11 @@ export const initialState: SHIFT_STATE = {
     ),
     endDate: endOfWeek(new Date()).setDate(endOfWeek(new Date()).getDate() + 1),
   },
+  modalState: {
+    open: false,
+  },
 };
+
 export const shiftSlice = createSlice({
   name: "shift",
   initialState,
@@ -143,6 +147,12 @@ export const shiftSlice = createSlice({
         addWeeks(state.dateState.startDate, 1)
       );
       state.dateState.endDate = Number(addWeeks(state.dateState.endDate, 1));
+    },
+    handleClose: (state) => {
+      state.modalState.open = false;
+    },
+    handleOpen: (state) => {
+      state.modalState.open = true;
     },
   },
   extraReducers: (builder) => {
@@ -210,10 +220,13 @@ export const {
   resetDateState,
   lastWeeks,
   afterWeeks,
+  handleClose,
+  handleOpen,
 } = shiftSlice.actions;
 export const selectShifts = (state: RootState) => state.shift.shifts;
 export const selectEditedShift = (state: RootState) => state.shift.editedShift;
 export const selectSelectedShift = (state: RootState) =>
   state.shift.selectedShift;
 export const selectDateState = (state: RootState) => state.shift.dateState;
+export const selectModalState = (state: RootState) => state.shift.modalState;
 export default shiftSlice.reducer;

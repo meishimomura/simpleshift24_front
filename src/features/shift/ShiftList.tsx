@@ -16,16 +16,17 @@ import {
   editShift,
   selectShift,
   resetDateState,
-  selectEditedShift,
   selectDateState,
+  selectModalState,
   lastWeeks,
   afterWeeks,
+  handleClose,
+  handleOpen,
+  fetchAsyncGetShifts,
 } from "./shiftSlice";
 import { AppDispatch } from "../../app/store";
 import { initialState } from "./shiftSlice";
 import ShiftForm from "./ShiftForm";
-import ShiftDisplay from "./ShiftDisplay";
-
 const useStyles = makeStyles((theme: Theme) => ({
   button: {
     margin: theme.spacing(3),
@@ -64,8 +65,8 @@ const ShiftList: React.FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
   const shifts = useSelector(selectShifts);
-  const editedShift = useSelector(selectEditedShift);
   const dateState = useSelector(selectDateState);
+  const modalState = useSelector(selectModalState);
 
   const days = [
     { en: "mon", ja: "月" },
@@ -89,17 +90,15 @@ const ShiftList: React.FC = () => {
       end: dateState.endDate,
     })
   );
+
   const [rows, setRows] = useState(shifts);
 
-  const [open, setOpen] = useState(false);
   const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    setOpen(modalState.open);
+  }, [modalState]);
 
   useEffect(() => {
     setCalendar(
@@ -108,7 +107,8 @@ const ShiftList: React.FC = () => {
         end: dateState.endDate,
       })
     );
-  }, [dateState]);
+    dispatch(fetchAsyncGetShifts(dateState));
+  }, [dateState, shifts]);
 
   useEffect(() => {
     setRows(shifts);
@@ -154,7 +154,7 @@ const ShiftList: React.FC = () => {
               className={styles.shiftlist__tdth}
               colSpan={colspan}
               onClick={() => {
-                handleOpen();
+                dispatch(handleOpen());
                 dispatch(editShift(row));
               }}
             >
@@ -179,7 +179,7 @@ const ShiftList: React.FC = () => {
         size="small"
         startIcon={<AddCircleOutlineIcon />}
         onClick={() => {
-          handleOpen();
+          dispatch(handleOpen());
           dispatch(
             editShift({
               id: 0,
@@ -233,7 +233,7 @@ const ShiftList: React.FC = () => {
                   rowSpan={5}
                   className={styles.shiftlist__tdth}
                 >
-                  {format(dateState.startDate, "M")}&#047;{getDate(date)}
+                  {format(date, "M")}&#047;{getDate(date)}
                 </th>
                 <td
                   key={getDay(date) + getDate(date)}
@@ -270,9 +270,9 @@ const ShiftList: React.FC = () => {
           ))}
         </tbody>
       </table>
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={() => dispatch(handleClose())}>
         <div style={modalStyle} className={classes.paper}>
-          {editedShift.lane ? <ShiftForm /> : <ShiftDisplay />}
+          <ShiftForm />
         </div>
       </Modal>
     </>
