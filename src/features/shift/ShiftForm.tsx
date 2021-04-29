@@ -107,6 +107,15 @@ const ShiftForm: React.FC = () => {
     </MenuItem>
   ));
 
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <MuiPickersUtilsProvider utils={ExtendedUtils} locale={jaLocale}>
       <h2>{editedShift.id ? "シフト更新" : "新規シフト"}</h2>
@@ -209,6 +218,7 @@ const ShiftForm: React.FC = () => {
           color="default"
           size="small"
           onClick={() => {
+            handleClose();
             dispatch(editShift(initialState.editedShift));
             dispatch(selectShift(initialState.selectedShift));
           }}

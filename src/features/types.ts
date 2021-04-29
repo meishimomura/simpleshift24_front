@@ -55,20 +55,15 @@ export interface POST_SHIFT {
   lane: number;
   staff: number;
 }
+export interface DATE_STATE {
+  startDate: number;
+  endDate: number;
+}
 export interface SHIFT_STATE {
   shifts: READ_SHIFT[];
   editedShift: POST_SHIFT;
   selectedShift: READ_SHIFT;
-}
-export interface DATE_STATE {
-  sDate: number;
-  eDate: number;
-}
-/*ShiftList.tsx*/
-export interface SHIFT_PAGE_STATE {
-  rows: READ_SHIFT[];
-  offset: number;
-  parPage: number;
+  dateState: DATE_STATE;
 }
 /*staffSlice.ts*/
 export interface READ_STAFF {
