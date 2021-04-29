@@ -26,6 +26,7 @@ import {
   selectEditedShift,
   editShift,
   selectShift,
+  handleClose,
 } from "./shiftSlice";
 import { selectStaff } from "../staff/staffSlice";
 import { AppDispatch } from "../../app/store";
@@ -107,15 +108,6 @@ const ShiftForm: React.FC = () => {
     </MenuItem>
   ));
 
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <MuiPickersUtilsProvider utils={ExtendedUtils} locale={jaLocale}>
       <h2>{editedShift.id ? "シフト更新" : "新規シフト"}</h2>
@@ -190,11 +182,12 @@ const ShiftForm: React.FC = () => {
           className={classes.button}
           startIcon={<SaveIcon />}
           disabled={isDisabled}
-          onClick={
+          onClick={() => {
             editedShift.id !== 0
-              ? () => dispatch(fetchAsyncUpdateShift(editedShift))
-              : () => dispatch(fetchAsyncCreateShift(editedShift))
-          }
+              ? dispatch(fetchAsyncUpdateShift(editedShift))
+              : dispatch(fetchAsyncCreateShift(editedShift));
+            dispatch(handleClose());
+          }}
         >
           {editedShift.id !== 0 ? "更新" : "保存"}
         </Button>
@@ -208,6 +201,7 @@ const ShiftForm: React.FC = () => {
             onClick={() => {
               dispatch(fetchAsyncDeleteShift(editedShift.id));
               dispatch(editShift(initialState.editedShift));
+              dispatch(handleClose());
             }}
           >
             削除
@@ -218,7 +212,7 @@ const ShiftForm: React.FC = () => {
           color="default"
           size="small"
           onClick={() => {
-            handleClose();
+            dispatch(handleClose());
             dispatch(editShift(initialState.editedShift));
             dispatch(selectShift(initialState.selectedShift));
           }}

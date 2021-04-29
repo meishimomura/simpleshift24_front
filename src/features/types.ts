@@ -59,11 +59,15 @@ export interface DATE_STATE {
   startDate: number;
   endDate: number;
 }
+export interface MODAL_STATE {
+  open: boolean;
+}
 export interface SHIFT_STATE {
   shifts: READ_SHIFT[];
   editedShift: POST_SHIFT;
   selectedShift: READ_SHIFT;
   dateState: DATE_STATE;
+  modalState: MODAL_STATE;
 }
 /*staffSlice.ts*/
 export interface READ_STAFF {
