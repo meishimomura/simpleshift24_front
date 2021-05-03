@@ -1,0 +1,16 @@
+.shiftform__formWrap {
+  display: flex;
+  flex-direction: column;
+}
+.shiftform__timeFormWrap {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.styles.shiftform__timeField {
+  width: 60px;
+}
+.shiftform__timeFormWrap p {
+  font-size: 1.5rem;
+  font-weight: bold;
+}

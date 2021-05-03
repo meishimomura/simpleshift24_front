@@ -98,6 +98,11 @@ const ShiftList: React.FC = () => {
     shiftTimes.push(("00" + i).slice(-2) + ":30");
   }
 
+  const shiftDisplayTimes: number[] = [];
+  for (let i = 0; i < 24; ++i) {
+    shiftDisplayTimes.push(i);
+  }
+
   const [calendar, setCalendar] = useState(
     eachDayOfInterval({
       start: dateState.startDate,
@@ -122,7 +127,7 @@ const ShiftList: React.FC = () => {
       })
     );
     dispatch(fetchAsyncGetShifts(dateState));
-  }, [dateState, shifts]);
+  }, [dateState]);
 
   useEffect(() => {
     setRows(shifts);
@@ -213,7 +218,6 @@ const ShiftList: React.FC = () => {
       >
         新規シフト追加
       </Button>
-
       <Button
         className={classes.button}
         variant="contained"
@@ -224,7 +228,6 @@ const ShiftList: React.FC = () => {
       >
         印刷
       </Button>
-
       <h2>{format(dateState.startDate, "y年M月")}</h2>
       <Button
         className={classes.button}
@@ -254,7 +257,10 @@ const ShiftList: React.FC = () => {
         次の週
       </Button>
       <Paper className={classes.mainPaper}>
-        <div ref={componentRef}>
+        <div ref={componentRef} className={styles.shiftlist__print}>
+          <p className={styles.shiftlist__printTitle}>
+            {format(dateState.startDate, "y年M月")}シフト表
+          </p>
           <table className={styles.shiftlist__table}>
             <tbody>
               {calendar.map((date, i) => (

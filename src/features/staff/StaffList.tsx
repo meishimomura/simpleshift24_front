@@ -26,12 +26,8 @@ import {
   selectEditedStaff,
 } from "./staffSlice";
 import { AppDispatch } from "../../app/store";
-import {
-  initialState,
-  fetchAsyncCreateStaff,
-  fetchAsyncUpdateStaff,
-} from "./staffSlice";
-import { READ_STAFF, PAGE_STATE } from "../types";
+import { fetchAsyncCreateStaff, fetchAsyncUpdateStaff } from "./staffSlice";
+import { PAGE_STATE } from "../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
   table: {

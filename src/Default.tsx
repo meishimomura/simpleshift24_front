@@ -28,15 +28,6 @@ import {
 
 import { AppDispatch } from "./app/store";
 
-declare module "@material-ui/core/styles/createPalette" {
-  interface Palette {
-    customColor1: Palette["primary"];
-  }
-  interface PaletteOptions {
-    customColor1: PaletteOptions["primary"];
-  }
-}
-
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -48,9 +39,6 @@ const theme = createMuiTheme({
       main: "#00c853",
       light: "#5efa81",
       dark: "#009423",
-    },
-    customColor1: {
-      main: "#f60257",
     },
   },
   typography: {
