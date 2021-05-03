@@ -14,6 +14,8 @@ import Container from "@material-ui/core/Container";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 
+import Logo from "../../static/images/logo2.png";
+
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../app/store";
 import {
@@ -88,6 +90,9 @@ const Auth: React.FC = () => {
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div className={classes.paper}>
+            <h1>
+              <img src={Logo} alt="ロゴ" width="300px" />
+            </h1>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>

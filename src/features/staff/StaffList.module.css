@@ -1,0 +1,17 @@
+.stafflist__iconWrap {
+  display: flex;
+  align-items: center;
+}
+.stafflist__icon {
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+}
+.stafflist__hover {
+  cursor: pointer;
+}
+button:disabled {
+  color: #ccc;
+  cursor: none;
+}

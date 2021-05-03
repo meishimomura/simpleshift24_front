@@ -5,6 +5,7 @@ import { Grid, Avatar, AppBar, Box, Tabs, Tab } from "@material-ui/core";
 import { makeStyles, createMuiTheme, Theme } from "@material-ui/core/styles";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { ThemeProvider } from "@material-ui/styles";
+import Logo from "./static/images/logo1.png";
 
 import Staff from "./features/staff/Staff";
 import Shift from "./features/shift/Shift";
@@ -27,18 +28,14 @@ import {
 
 import { AppDispatch } from "./app/store";
 
-const useStyles = makeStyles((theme: Theme) => ({
-  icon: {
-    cursor: "none",
-  },
-  avatar: {
-    marginRight: theme.spacing(2),
-  },
-  header: {
-    color: "#fff",
-    padding: "0px 50px",
-  },
-}));
+declare module "@material-ui/core/styles/createPalette" {
+  interface Palette {
+    customColor1: Palette["primary"];
+  }
+  interface PaletteOptions {
+    customColor1: PaletteOptions["primary"];
+  }
+}
 
 const theme = createMuiTheme({
   palette: {
@@ -52,11 +49,27 @@ const theme = createMuiTheme({
       light: "#5efa81",
       dark: "#009423",
     },
+    customColor1: {
+      main: "#f60257",
+    },
   },
   typography: {
     htmlFontSize: 10,
   },
 });
+
+const useStyles = makeStyles((theme: Theme) => ({
+  icon: {
+    cursor: "none",
+  },
+  avatar: {
+    marginRight: theme.spacing(2),
+  },
+  header: {
+    color: "#fff",
+    padding: "0px 50px",
+  },
+}));
 
 const Default: React.FC = () => {
   const history = useHistory();
@@ -130,7 +143,9 @@ const Default: React.FC = () => {
         <AppBar color="primary" position="static" className={classes.header}>
           <Grid container alignItems="center">
             <Grid item xs={8}>
-              <h1>シンプルシフト24</h1>
+              <h1>
+                <img src={Logo} alt="ロゴ" width="300px" />
+              </h1>
             </Grid>
             <Grid item xs={4}>
               <Grid container alignItems="center" justify="flex-end">
@@ -176,7 +191,11 @@ const Default: React.FC = () => {
           position="static"
           style={{ backgroundColor: "#ffffff" }}
         >
-          <Tabs value={selectedTab} onChange={handleChange}>
+          <Tabs
+            value={selectedTab}
+            onChange={handleChange}
+            indicatorColor="secondary"
+          >
             <Tab label="シフト管理" />
             <Tab label="スタッフ管理" />
           </Tabs>
