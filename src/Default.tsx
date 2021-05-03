@@ -42,7 +42,7 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    htmlFontSize: 10,
+    htmlFontSize: 14,
   },
 });
 
@@ -123,7 +123,7 @@ const Default: React.FC = () => {
       await dispatch(fetchAsyncGetShifts(DateState));
     };
     fetchBootLoader();
-  }, [dispatch]);
+  }, [dispatch, DateState]);
 
   return (
     <ThemeProvider theme={theme}>

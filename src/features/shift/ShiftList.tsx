@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "./ShiftList.module.css";
 
@@ -25,7 +25,6 @@ import {
   afterWeeks,
   handleClose,
   handleOpen,
-  fetchAsyncGetShifts,
 } from "./shiftSlice";
 import { AppDispatch } from "../../app/store";
 import { initialState } from "./shiftSlice";
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
   mainPaper: {
-    width: "85%",
+    width: "90%",
     padding: theme.spacing(2),
     marginLeft: theme.spacing(3),
     display: "flex",
@@ -126,7 +125,6 @@ const ShiftList: React.FC = () => {
         end: dateState.endDate,
       })
     );
-    dispatch(fetchAsyncGetShifts(dateState));
   }, [dateState]);
 
   useEffect(() => {
