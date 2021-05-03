@@ -186,7 +186,7 @@ export const shiftSlice = createSlice({
       (state, action: PayloadAction<READ_SHIFT>) => {
         return {
           ...state,
-          tasks: state.shifts.map((s) =>
+          shifts: state.shifts.map((s) =>
             s.id === action.payload.id ? action.payload : s
           ),
           editedTask: initialState.editedShift,

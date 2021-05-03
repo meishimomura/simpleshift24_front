@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
+import styles from "./ShiftForm.module.css";
+
 import {
   TextField,
   InputLabel,
@@ -9,7 +11,6 @@ import {
   Button,
 } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
-import AddIcon from "@material-ui/icons/Add";
 import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
@@ -36,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   field: {
     margin: theme.spacing(2),
     minWidth: 240,
+  },
+  timeEndField: {
+    marginTop: theme.spacing(2),
   },
   button: {
     margin: theme.spacing(3),
@@ -112,69 +116,79 @@ const ShiftForm: React.FC = () => {
     <MuiPickersUtilsProvider utils={ExtendedUtils} locale={jaLocale}>
       <h2>{editedShift.id ? "シフト更新" : "新規シフト"}</h2>
       <form>
-        <DatePicker
-          name="shift_date"
-          label="日付"
-          value={editedShift.shift_date === "" ? null : editedShift.shift_date}
-          onChange={handleDateChange}
-          format="yyyy/MM/dd"
-          animateYearScrolling
-          InputLabelProps={{
-            shrink: true,
-          }}
-          okLabel="決定"
-          cancelLabel="キャンセル"
-        />
-        <TextField
-          name="shift_start"
-          label="時間"
-          type="time"
-          value={editedShift.shift_start}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          inputProps={{
-            step: 300,
-          }}
-          onChange={handleInputChange}
-        />
-        <TextField
-          name="shift_end"
-          label=""
-          type="time"
-          value={editedShift.shift_end}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          inputProps={{
-            step: 300,
-          }}
-          onChange={handleInputChange}
-        />
-        <FormControl className={classes.field}>
-          <InputLabel>従業員名</InputLabel>
-          <Select
-            name="staff"
-            onChange={handleSelectStaffChange}
-            value={editedShift.staff}
-          >
-            {staffOptions}
-          </Select>
-        </FormControl>
-        <FormControl className={classes.field}>
-          <InputLabel>レーン</InputLabel>
-          <Select
-            name="lane"
-            onChange={handleSelectLaneChange}
-            value={editedShift.lane}
-          >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={5}>5</MenuItem>
-          </Select>
-        </FormControl>
+        <div className={styles.shiftform__formWrap}>
+          <DatePicker
+            name="shift_date"
+            label="日付"
+            value={
+              editedShift.shift_date === "" ? null : editedShift.shift_date
+            }
+            onChange={handleDateChange}
+            format="yyyy/MM/dd"
+            animateYearScrolling
+            InputLabelProps={{
+              shrink: true,
+            }}
+            okLabel="決定"
+            cancelLabel="キャンセル"
+            className={classes.field}
+          />
+          <div className={styles.shiftform__timeFormWrap}>
+            <TextField
+              name="shift_start"
+              label="時間"
+              type="time"
+              value={editedShift.shift_start}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              inputProps={{
+                step: 300,
+              }}
+              onChange={handleInputChange}
+              className={styles.shiftform__timeField}
+            />
+            <p>〜</p>
+            <TextField
+              name="shift_end"
+              label=""
+              type="time"
+              value={editedShift.shift_end}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              inputProps={{
+                step: 300,
+              }}
+              onChange={handleInputChange}
+              className={(styles.shiftform__timeField, classes.timeEndField)}
+            />
+          </div>
+          <FormControl className={classes.field}>
+            <InputLabel>従業員名</InputLabel>
+            <Select
+              name="staff"
+              onChange={handleSelectStaffChange}
+              value={editedShift.staff}
+            >
+              {staffOptions}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.field}>
+            <InputLabel>レーン</InputLabel>
+            <Select
+              name="lane"
+              onChange={handleSelectLaneChange}
+              value={editedShift.lane}
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
         <Button
           variant="contained"
           color="primary"

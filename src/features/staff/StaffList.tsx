@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 
+import styles from "./StaffList.module.css";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
 import SaveIcon from "@material-ui/icons/Save";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import Paper from "@material-ui/core/Paper";
 import {
   Button,
   Table,
@@ -24,12 +26,8 @@ import {
   selectEditedStaff,
 } from "./staffSlice";
 import { AppDispatch } from "../../app/store";
-import {
-  initialState,
-  fetchAsyncCreateStaff,
-  fetchAsyncUpdateStaff,
-} from "./staffSlice";
-import { READ_STAFF, PAGE_STATE } from "../types";
+import { fetchAsyncCreateStaff, fetchAsyncUpdateStaff } from "./staffSlice";
+import { PAGE_STATE } from "../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
   table: {
@@ -37,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   button: {
     margin: theme.spacing(3),
+    color: "white",
+  },
+  button2: {
     color: "white",
   },
   small: {
@@ -55,6 +56,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  mainPaper: {
+    width: 550,
+    padding: theme.spacing(2),
+    marginLeft: theme.spacing(3),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
   },
   field: {
     margin: theme.spacing(2),
@@ -114,62 +123,83 @@ const StaffList: React.FC = () => {
       <Button
         className={classes.button}
         variant="contained"
-        color="secondary"
+        color="primary"
         size="small"
         startIcon={<AddCircleOutlineIcon />}
         onClick={handleOpen}
       >
         スタッフ新規登録
       </Button>
-      {staff[0]?.staff_name && (
-        <>
-          <Table size="small">
-            <TableBody>
-              {state.rows
-                .slice(state.offset, state.offset + state.parPage)
-                .map((row, rowIndex) => (
-                  <TableRow hover key={rowIndex}>
-                    <TableCell>
-                      <span>{row["staff_name"]}</span>
-                    </TableCell>
-                    <TableCell align="center">
-                      <button
-                        onClick={() => {
-                          dispatch(
-                            fetchAsyncDeleteStaff({ ...row, is_active: false })
-                          );
-                        }}
+      <Paper className={classes.mainPaper}>
+        {staff[0]?.staff_name && (
+          <>
+            <Table size="small" className={classes.table}>
+              <TableBody>
+                {state.rows
+                  .slice(state.offset, state.offset + state.parPage)
+                  .map((row, rowIndex) => (
+                    <TableRow hover key={rowIndex}>
+                      <TableCell>
+                        <span>{row["staff_name"]}</span>
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        className={styles.stafflist__iconWrap}
                       >
-                        <DeleteOutlineOutlinedIcon />
-                      </button>
-                      <button
-                        onClick={() => {
-                          dispatch(editStaff(row));
-                          handleOpen();
-                        }}
-                      >
-                        <EditOutlinedIcon />
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-          {state.rows.length > state.parPage && (
-            <Pagination
-              limit={state.parPage}
-              offset={state.offset}
-              total={state.rows.length}
-              onClick={(e, offset) => {
-                setState((state) => ({
-                  ...state,
-                  offset: offset,
-                }));
-              }}
-            />
-          )}
-        </>
-      )}
+                        <Button
+                          variant="contained"
+                          size="small"
+                          style={{
+                            backgroundColor: "#939598",
+                            marginRight: "20px",
+                          }}
+                          className={(styles.stafflist__icon, classes.button2)}
+                          onClick={() => {
+                            dispatch(
+                              fetchAsyncDeleteStaff({
+                                ...row,
+                                is_active: false,
+                              })
+                            );
+                          }}
+                        >
+                          <DeleteOutlineOutlinedIcon />
+                          削除
+                        </Button>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="secondary"
+                          onClick={() => {
+                            dispatch(editStaff(row));
+                            handleOpen();
+                          }}
+                          className={(styles.stafflist__icon, classes.button2)}
+                        >
+                          <EditOutlinedIcon />
+                          編集
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+            {state.rows.length > state.parPage && (
+              <Pagination
+                limit={state.parPage}
+                offset={state.offset}
+                total={state.rows.length}
+                onClick={(e, offset) => {
+                  setState((state) => ({
+                    ...state,
+                    offset: offset,
+                  }));
+                }}
+              />
+            )}
+          </>
+        )}
+      </Paper>
       <Modal open={open} onClose={handleClose}>
         <div style={modalStyle} className={classes.paper}>
           <TextField
@@ -184,9 +214,9 @@ const StaffList: React.FC = () => {
           />
           <Button
             variant="contained"
-            color="primary"
+            color={editedStaff.id !== 0 ? "secondary" : "primary"}
             size="small"
-            className={classes.saveModal}
+            className={(classes.saveModal, classes.button)}
             startIcon={<SaveIcon />}
             disabled={isDisabled}
             onClick={() => {

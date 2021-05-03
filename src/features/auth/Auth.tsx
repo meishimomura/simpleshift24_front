@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import styles from "./Auth.module.css";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -13,6 +12,8 @@ import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
+
+import Logo from "../../static/images/logo2.png";
 
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "../../app/store";
@@ -88,6 +89,9 @@ const Auth: React.FC = () => {
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div className={classes.paper}>
+            <h1>
+              <img src={Logo} alt="ロゴ" width="300px" />
+            </h1>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>

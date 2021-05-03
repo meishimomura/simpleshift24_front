@@ -1,3 +1,13 @@
+h2 {
+  margin-left: 30px;
+}
+.shiftlist__print {
+  margin: 15px;
+}
+.shiftlist__printTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
 .shiftlist__table {
   border-collapse: collapse;
 }

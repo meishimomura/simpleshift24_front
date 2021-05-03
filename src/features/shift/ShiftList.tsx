@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "./ShiftList.module.css";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { Button, Modal } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
 
 import { useReactToPrint } from "react-to-print";
 
@@ -24,14 +25,15 @@ import {
   afterWeeks,
   handleClose,
   handleOpen,
-  fetchAsyncGetShifts,
 } from "./shiftSlice";
 import { AppDispatch } from "../../app/store";
 import { initialState } from "./shiftSlice";
 import ShiftForm from "./ShiftForm";
+
 const useStyles = makeStyles((theme: Theme) => ({
   button: {
     margin: theme.spacing(3),
+    color: "white",
   },
   small: {
     margin: "auto",
@@ -49,6 +51,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  mainPaper: {
+    width: "90%",
+    padding: theme.spacing(2),
+    marginLeft: theme.spacing(3),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
   },
 }));
 
@@ -87,6 +97,11 @@ const ShiftList: React.FC = () => {
     shiftTimes.push(("00" + i).slice(-2) + ":30");
   }
 
+  const shiftDisplayTimes: number[] = [];
+  for (let i = 0; i < 24; ++i) {
+    shiftDisplayTimes.push(i);
+  }
+
   const [calendar, setCalendar] = useState(
     eachDayOfInterval({
       start: dateState.startDate,
@@ -110,8 +125,7 @@ const ShiftList: React.FC = () => {
         end: dateState.endDate,
       })
     );
-    dispatch(fetchAsyncGetShifts(dateState));
-  }, [dateState, shifts]);
+  }, [dateState]);
 
   useEffect(() => {
     setRows(shifts);
@@ -182,8 +196,8 @@ const ShiftList: React.FC = () => {
       <Button
         className={classes.button}
         variant="contained"
-        color="secondary"
         size="small"
+        color="primary"
         startIcon={<AddCircleOutlineIcon />}
         onClick={() => {
           dispatch(handleOpen());
@@ -202,18 +216,16 @@ const ShiftList: React.FC = () => {
       >
         新規シフト追加
       </Button>
-
       <Button
         className={classes.button}
         variant="contained"
-        color="secondary"
+        color="primary"
         size="small"
         startIcon={<AddCircleOutlineIcon />}
         onClick={handlePrint}
       >
         印刷
       </Button>
-
       <h2>{format(dateState.startDate, "y年M月")}</h2>
       <Button
         className={classes.button}
@@ -242,55 +254,72 @@ const ShiftList: React.FC = () => {
       >
         次の週
       </Button>
-      <div ref={componentRef}>
-        <table className={styles.shiftlist__table}>
-          <tbody>
-            {calendar.map((date, i) => (
-              <>
-                <tr key={getDate(date) + 1}>
-                  <th
-                    key={getDate(date)}
-                    rowSpan={5}
+      <Paper className={classes.mainPaper}>
+        <div ref={componentRef} className={styles.shiftlist__print}>
+          <p className={styles.shiftlist__printTitle}>
+            {format(dateState.startDate, "y年M月")}シフト表
+          </p>
+          <table className={styles.shiftlist__table}>
+            <tbody>
+              {calendar.map((date, i) => (
+                <>
+                  <tr key={getDate(date) + 1}>
+                    <th
+                      key={getDate(date)}
+                      rowSpan={5}
+                      className={styles.shiftlist__tdth}
+                    >
+                      {format(date, "M")}&#047;{getDate(date)}
+                    </th>
+                    <td
+                      key={getDay(date) + getDate(date)}
+                      rowSpan={5}
+                      className={styles.shiftlist__tdth}
+                    >
+                      {days[i].ja}
+                    </td>
+                    {shiftTimes.map((shiftTime) => (
+                      <>{staffData(date, shiftTime, 1)}</>
+                    ))}
+                  </tr>
+                  <tr
+                    key={getDate(date) + 2}
                     className={styles.shiftlist__tdth}
                   >
-                    {format(date, "M")}&#047;{getDate(date)}
-                  </th>
-                  <td
-                    key={getDay(date) + getDate(date)}
-                    rowSpan={5}
+                    {shiftTimes.map((shiftTime) => (
+                      <>{staffData(date, shiftTime, 2)}</>
+                    ))}
+                  </tr>
+                  <tr
+                    key={getDate(date) + 3}
                     className={styles.shiftlist__tdth}
                   >
-                    {days[i].ja}
-                  </td>
-                  {shiftTimes.map((shiftTime) => (
-                    <>{staffData(date, shiftTime, 1)}</>
-                  ))}
-                </tr>
-                <tr key={getDate(date) + 2} className={styles.shiftlist__tdth}>
-                  {shiftTimes.map((shiftTime) => (
-                    <>{staffData(date, shiftTime, 2)}</>
-                  ))}
-                </tr>
-                <tr key={getDate(date) + 3} className={styles.shiftlist__tdth}>
-                  {shiftTimes.map((shiftTime) => (
-                    <>{staffData(date, shiftTime, 3)}</>
-                  ))}
-                </tr>
-                <tr key={getDate(date) + 4} className={styles.shiftlist__tdth}>
-                  {shiftTimes.map((shiftTime) => (
-                    <>{staffData(date, shiftTime, 4)}</>
-                  ))}
-                </tr>
-                <tr key={getDate(date) + 5} className={styles.shiftlist__tdth}>
-                  {shiftTimes.map((shiftTime) => (
-                    <>{staffData(date, shiftTime, 5)}</>
-                  ))}
-                </tr>
-              </>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                    {shiftTimes.map((shiftTime) => (
+                      <>{staffData(date, shiftTime, 3)}</>
+                    ))}
+                  </tr>
+                  <tr
+                    key={getDate(date) + 4}
+                    className={styles.shiftlist__tdth}
+                  >
+                    {shiftTimes.map((shiftTime) => (
+                      <>{staffData(date, shiftTime, 4)}</>
+                    ))}
+                  </tr>
+                  <tr
+                    key={getDate(date) + 5}
+                    className={styles.shiftlist__tdth}
+                  >
+                    {shiftTimes.map((shiftTime) => (
+                      <>{staffData(date, shiftTime, 5)}</>
+                    ))}
+                  </tr>
+                </>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Paper>
       <Modal open={open} onClose={() => dispatch(handleClose())}>
         <div style={modalStyle} className={classes.paper}>
           <ShiftForm />
