@@ -1,8 +1,11 @@
-h2 {
+.shiftlist__month {
   margin-left: 30px;
 }
-tr:nth-of-type(5n) {
+.shiftlist__table tr:nth-of-type(5n) {
   border-bottom: 3px solid;
+}
+.shiftlist__table tr:last-child {
+  border-bottom: 1px solid;
 }
 .shiftlist__print {
   margin: 15px;

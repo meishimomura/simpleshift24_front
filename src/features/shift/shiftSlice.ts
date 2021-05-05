@@ -189,8 +189,8 @@ export const shiftSlice = createSlice({
           shifts: state.shifts.map((s) =>
             s.id === action.payload.id ? action.payload : s
           ),
-          editedTask: initialState.editedShift,
-          selectedTask: initialState.selectedShift,
+          editedShift: initialState.editedShift,
+          selectedShift: initialState.selectedShift,
         };
       }
     );
@@ -203,8 +203,8 @@ export const shiftSlice = createSlice({
         return {
           ...state,
           shifts: state.shifts.filter((s) => s.id !== action.payload),
-          editedTask: initialState.editedShift,
-          selectedTask: initialState.selectedShift,
+          editedShift: initialState.editedShift,
+          selectedShift: initialState.selectedShift,
         };
       }
     );

@@ -172,7 +172,9 @@ const ShiftList: React.FC = () => {
             <td
               id={format(date, "y-M-d") + shiftTime + i}
               key={format(date, "y-M-d") + shiftTime + i}
-              className={(styles.shiftlist__tdth, styles.shiftlist__pointer)}
+              className={
+                styles.shiftlist__tdth + " " + styles.shiftlist__pointer
+              }
               colSpan={colspan}
               onClick={() => {
                 dispatch(handleOpen());
@@ -226,7 +228,9 @@ const ShiftList: React.FC = () => {
       >
         印刷
       </Button>
-      <h2>{format(dateState.startDate, "y年M月")}</h2>
+      <h2 className={styles.shiftlist__month}>
+        {format(dateState.startDate, "y年M月")}
+      </h2>
       <Button
         className={classes.button}
         variant="contained"
@@ -285,9 +289,11 @@ const ShiftList: React.FC = () => {
                       key={getDate(date)}
                       rowSpan={5}
                       className={
-                        styles.shiftlist__tdth +
-                        " " +
-                        styles.shiftlist__borderBold
+                        days[i].en !== "sun"
+                          ? styles.shiftlist__tdth +
+                            " " +
+                            styles.shiftlist__borderBold
+                          : styles.shiftlist__tdth
                       }
                     >
                       {format(date, "M")}&#047;{getDate(date)}
@@ -296,9 +302,11 @@ const ShiftList: React.FC = () => {
                       key={getDay(date) + getDate(date)}
                       rowSpan={5}
                       className={
-                        styles.shiftlist__tdth +
-                        " " +
-                        styles.shiftlist__borderBold
+                        days[i].en !== "sun"
+                          ? styles.shiftlist__tdth +
+                            " " +
+                            styles.shiftlist__borderBold
+                          : styles.shiftlist__tdth
                       }
                     >
                       {days[i].ja}
