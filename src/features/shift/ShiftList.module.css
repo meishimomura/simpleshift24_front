@@ -1,6 +1,9 @@
 h2 {
   margin-left: 30px;
 }
+tr:nth-of-type(5n) {
+  border-bottom: 3px solid;
+}
 .shiftlist__print {
   margin: 15px;
 }
@@ -14,4 +17,13 @@ h2 {
 .shiftlist__tdth {
   border: 1px solid;
   padding: 10px;
+}
+.shiftlist__pointer {
+  cursor: pointer;
+}
+.shiftlist__borderBold {
+  border-bottom: 3px solid;
+}
+.shiftlist__thead {
+  padding: 0 4px;
 }

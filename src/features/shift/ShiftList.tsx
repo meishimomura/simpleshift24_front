@@ -97,9 +97,9 @@ const ShiftList: React.FC = () => {
     shiftTimes.push(("00" + i).slice(-2) + ":30");
   }
 
-  const shiftDisplayTimes: number[] = [];
+  const shiftDisplayTimes: string[] = [];
   for (let i = 0; i < 24; ++i) {
-    shiftDisplayTimes.push(i);
+    shiftDisplayTimes.push(("00" + i).slice(-2));
   }
 
   const [calendar, setCalendar] = useState(
@@ -172,7 +172,7 @@ const ShiftList: React.FC = () => {
             <td
               id={format(date, "y-M-d") + shiftTime + i}
               key={format(date, "y-M-d") + shiftTime + i}
-              className={styles.shiftlist__tdth}
+              className={(styles.shiftlist__tdth, styles.shiftlist__pointer)}
               colSpan={colspan}
               onClick={() => {
                 dispatch(handleOpen());
@@ -260,6 +260,23 @@ const ShiftList: React.FC = () => {
             {format(dateState.startDate, "y年M月")}シフト表
           </p>
           <table className={styles.shiftlist__table}>
+            <thead>
+              <tr>
+                <td className={styles.shiftlist__thead}></td>
+                <td className={styles.shiftlist__thead}></td>
+                {shiftDisplayTimes.map((time) => (
+                  <>
+                    <td key={time + 30} className={styles.shiftlist__thead}>
+                      {time}
+                    </td>
+                    <td
+                      key={time + 60}
+                      className={styles.shiftlist__thead}
+                    ></td>
+                  </>
+                ))}
+              </tr>
+            </thead>
             <tbody>
               {calendar.map((date, i) => (
                 <>
@@ -267,14 +284,22 @@ const ShiftList: React.FC = () => {
                     <th
                       key={getDate(date)}
                       rowSpan={5}
-                      className={styles.shiftlist__tdth}
+                      className={
+                        styles.shiftlist__tdth +
+                        " " +
+                        styles.shiftlist__borderBold
+                      }
                     >
                       {format(date, "M")}&#047;{getDate(date)}
                     </th>
                     <td
                       key={getDay(date) + getDate(date)}
                       rowSpan={5}
-                      className={styles.shiftlist__tdth}
+                      className={
+                        styles.shiftlist__tdth +
+                        " " +
+                        styles.shiftlist__borderBold
+                      }
                     >
                       {days[i].ja}
                     </td>
