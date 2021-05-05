@@ -202,7 +202,7 @@ export const shiftSlice = createSlice({
       (state, action: PayloadAction<number>) => {
         return {
           ...state,
-          tasks: state.shifts.filter((s) => s.id !== action.payload),
+          shifts: state.shifts.filter((s) => s.id !== action.payload),
           editedTask: initialState.editedShift,
           selectedTask: initialState.selectedShift,
         };
