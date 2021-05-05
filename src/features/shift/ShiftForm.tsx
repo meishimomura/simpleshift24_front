@@ -214,7 +214,6 @@ const ShiftForm: React.FC = () => {
             startIcon={<DeleteOutlineOutlinedIcon />}
             onClick={() => {
               dispatch(fetchAsyncDeleteShift(editedShift.id));
-              dispatch(editShift(initialState.editedShift));
               dispatch(handleClose());
             }}
           >
